@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>for you 💚</title>
+  <style>
+    :root{
+      --bg:#0b0f10;
+      --fg:#d9f2e6;
+      --accent:#ff5ca2;  /* pink hearts */
+      --muted:#7aa48a;
+    }
+    html,body{height:100%;}
+    body{
+      margin:0; background:var(--bg); color:var(--fg); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; overflow:hidden;
+    }
+    #matrix{position:fixed; inset:0; z-index:0; display:block;}
+    .wrap{
+      position:relative; z-index:1; height:100%; display:grid; place-items:center; padding:24px;
+    }
+    .term{
+      width:min(780px, 92vw); background:rgba(12,16,17,.82); border:1px solid rgba(255,92,162,.25); border-radius:18px; box-shadow:0 20px 80px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,92,162,.12); overflow:hidden;
+    }
+    .term__titlebar{
+      display:flex; align-items:center; gap:10px; padding:12px 14px; background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); border-bottom:1px solid rgba(255,92,162,.18);
+    }
+    .dot{width:11px;height:11px;border-radius:50%;}
+    .dot--red{background:#ff5f56;}
+    .dot--yellow{background:#ffbd2e;}
+    .dot--green{background:#27c93f;}
+    .term__title{margin-left:6px; font-size:12px; letter-spacing:.04em; color:var(--muted)}
+    .screen{padding:22px 20px 26px 20px; min-height:220px;}
+    .line{display:block; white-space:pre-wrap; word-break:break-word; font-size:16px; line-height:1.6}
+    .prompt{color:var(--accent)}
+    .cursor{ display:inline-block; width:10px; height:1.15em; transform:translateY(2px); background:var(--accent); margin-left:4px; animation:blink 1s steps(1,end) infinite;}
+    @keyframes blink{50%{opacity:0}}
+    .footer{display:flex; justify-content:space-between; align-items:center; padding:10px 16px 14px; font-size:12px; color:var(--muted); border-top:1px solid rgba(255,92,162,.14)}
+    .tag{color:var(--accent)}
+    .btns{display:flex; gap:10px}
+    .btn{appearance:none; border:1px solid rgba(255,92,162,.35); background:rgba(255,92,162,.08); color:var(--fg); padding:8px 12px; font-size:12px; border-radius:999px; cursor:pointer; transition:.2s transform, .2s opacity, .2s filter; backdrop-filter: blur(6px);} 
+    .btn:hover{transform:translateY(-1px)}
+    .hint{position:fixed; left:50%; bottom:18px; transform:translateX(-50%); color:var(--muted); font-size:12px; opacity:.8}
+    a{color:var(--accent); text-decoration:none}
+  </style>
+</head>
+<body>
+  <canvas id="matrix" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div class="term" role="region" aria-label="cute terminal message">
+      <div class="term__titlebar">
+        <span class="dot dot--red"></span>
+        <span class="dot dot--yellow"></span>
+        <span class="dot dot--green"></span>
+        <span class="term__title">/usr/bin/feelings — zsh</span>
+      </div>
+      <div class="screen" id="screen">
+        <span class="line"><span class="prompt">howard@heart</span>:~$ <span id="type"></span><span class="cursor" id="cursor"></span></span>
+      </div>
+      <div class="footer">
+        <span>status: <span class="tag">200 OK</span> — sent with 💗</span>
+        <div class="btns">
+          <button class="btn" id="replay">replay</button>
+          <button class="btn" id="share">copy link</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="hint">tip: sound on for tiny keyclicks 🎧</div>
+  <audio id="tick" preload="auto">
+    <source src="data:audio/mp3;base64,//uQZAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQAAABN..." type="audio/mpeg">
+  </audio>
+<script>
+  const canvas = document.getElementById('matrix');
+  const ctx = canvas.getContext('2d');
+  let w, h, columns, drops;
+  // hearts only!
+  const glyphs = '❤💖💜💙💚💛💗💓💞💕';
+  function resize(){
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+    const fontSize = 20; // a bit bigger for hearts
+    ctx.font = fontSize + 'px monospace';
+    columns = Math.floor(w / fontSize);
+    drops = new Array(columns).fill(0).map(()=> Math.random()*h);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+  function rain(){
+    ctx.fillStyle = 'rgba(11,15,16,0.18)';
+    ctx.fillRect(0,0,w,h);
+    for(let i=0;i<columns;i++){
+      const ch = glyphs[Math.floor(Math.random()*glyphs.length)];
+      ctx.fillStyle = 'rgba(255,92,162,0.9)';
+      ctx.fillText(ch, i*20, drops[i]*1.0);
+      drops[i] += 1 + Math.random()*0.9;
+      if(drops[i]*20 > h + Math.random()*200){
+        drops[i] = -Math.random()*50;
+      }
+    }
+    requestAnimationFrame(rain);
+  }
+  rain();
+  const lines = [
+    'compiling reasons I adore you...\n',
+    '1) you make hard days soft.\n',
+    '2) your laugh = my favorite sound.\n',
+    '3) you inspire me to be better.\n',
+    '4) dinner + adventures + us > everything.\n',
+    'deploying ❤️  →  success!'
+  ];
+  const typeEl = document.getElementById('type');
+  const cursor = document.getElementById('cursor');
+  const tick = document.getElementById('tick');
+  let i=0, j=0, playing=true;
+  function typeNext(){
+    if(!playing) return;
+    if(i >= lines.length){ cursor.style.display='inline-block'; return; }
+    const current = lines[i];
+    if(j < current.length){
+      typeEl.textContent += current[j];
+      j++;
+      if(tick && current[j-1] !== '\n') { try{ tick.currentTime = 0; tick.play().catch(()=>{});}catch(e){} }
+      setTimeout(typeNext, 36 + Math.random()*70);
+    } else {
+      typeEl.textContent += (i < lines.length-1) ? '' : '';
+      i++; j=0;
+      if(i < lines.length) typeEl.textContent += '\n' + 'howard@heart:~$ ';
+      setTimeout(typeNext, 420);
+    }
+  }
+  typeEl.textContent = '';
+  setTimeout(typeNext, 700);
+  document.getElementById('replay').addEventListener('click', ()=>{
+    i=0; j=0; playing=true; typeEl.textContent=''; cursor.style.display='inline-block'; typeNext();
+  });
+  document.getElementById('share').addEventListener('click', async ()=>{
+    try{
+      await navigator.clipboard.writeText(location.href);
+      const btn = document.getElementById('share');
+      const old = btn.textContent; btn.textContent='copied!';
+      setTimeout(()=> btn.textContent=old, 1200);
+    }catch(e){ alert('Copy failed — just send this page URL :)'); }
+  });
+</script>
+</body>
+</html>
