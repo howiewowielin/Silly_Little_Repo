@@ -47,7 +47,7 @@
         <span class="term__title">/usr/bin/feelings — zsh</span>
       </div>
       <div class="screen" id="screen">
-        <span class="line"><span class="prompt">howard@heart</span>:~$ <span id="type"></span><span class="cursor" id="cursor"></span></span>
+        <span class="line"><span class="prompt">howie@heart</span>:~$ <span id="type"></span><span class="cursor" id="cursor"></span></span>
       </div>
       <div class="footer">
         <span>status: <span class="tag">200 OK</span> — sent with 💗</span>
@@ -115,11 +115,12 @@
 
   // ---------- Typewriter ----------
   const lines = [
-    'compiling reasons I adore you...\n',
-    '1) you make hard days soft.\n',
-    '2) your laugh = my favorite sound.\n',
-    '3) you inspire me to be better.\n',
-    '4) dinner + adventures + us > everything.\n',
+    'compiling reasons I adore you baobei...\n',
+    '1) you sometimes make my monotone voice less monotone\n',
+    '2) your ass = my favourite thing to smack\n',
+    '3) you always inspire me to do better\n',
+    '4) dinner + adventures + us > everything\n',
+    '5) hope u feel better soon my xiao tuzi\n',
     'deploying ❤️  →  success!'
   ];
   const typeEl = document.getElementById('type');
@@ -137,7 +138,7 @@
       setTimeout(typeNext, 36 + Math.random()*70);
     } else {
       i++; j=0;
-      if(i < lines.length) typeEl.textContent += '\n' + 'howard@heart:~$ ';
+      if(i < lines.length) typeEl.textContent += '\n' + 'howie@heart:~$ ';
       setTimeout(typeNext, 420);
     }
   }
