@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>for you 💚</title>
+  <title>for you 💖</title>
   <style>
     :root{
       --bg:#0b0f10;
@@ -13,22 +13,14 @@
     }
     html,body{height:100%;}
     body{
-      margin:0; background:var(--bg); color:var(--fg); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; overflow:hidden;
+      margin:0; background:var(--bg); color:var(--fg); font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; overflow:hidden;
     }
     #matrix{position:fixed; inset:0; z-index:0; display:block;}
-    .wrap{
-      position:relative; z-index:1; height:100%; display:grid; place-items:center; padding:24px;
-    }
-    .term{
-      width:min(780px, 92vw); background:rgba(12,16,17,.82); border:1px solid rgba(255,92,162,.25); border-radius:18px; box-shadow:0 20px 80px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,92,162,.12); overflow:hidden;
-    }
-    .term__titlebar{
-      display:flex; align-items:center; gap:10px; padding:12px 14px; background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); border-bottom:1px solid rgba(255,92,162,.18);
-    }
+    .wrap{ position:relative; z-index:1; height:100%; display:grid; place-items:center; padding:24px; }
+    .term{ width:min(780px, 92vw); background:rgba(12,16,17,.82); border:1px solid rgba(255,92,162,.25); border-radius:18px; box-shadow:0 20px 80px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,92,162,.12); overflow:hidden; }
+    .term__titlebar{ display:flex; align-items:center; gap:10px; padding:12px 14px; background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); border-bottom:1px solid rgba(255,92,162,.18); }
     .dot{width:11px;height:11px;border-radius:50%;}
-    .dot--red{background:#ff5f56;}
-    .dot--yellow{background:#ffbd2e;}
-    .dot--green{background:#27c93f;}
+    .dot--red{background:#ff5f56;} .dot--yellow{background:#ffbd2e;} .dot--green{background:#27c93f;}
     .term__title{margin-left:6px; font-size:12px; letter-spacing:.04em; color:var(--muted)}
     .screen{padding:22px 20px 26px 20px; min-height:220px;}
     .line{display:block; white-space:pre-wrap; word-break:break-word; font-size:16px; line-height:1.6}
@@ -71,36 +63,57 @@
     <source src="data:audio/mp3;base64,//uQZAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQAAABN..." type="audio/mpeg">
   </audio>
 <script>
+  // ---------- Canvas Heart Rain (no emoji required) ----------
   const canvas = document.getElementById('matrix');
   const ctx = canvas.getContext('2d');
-  let w, h, columns, drops;
-  // hearts only!
-  const glyphs = '❤💖💜💙💚💛💗💓💞💕';
+  let W, H, COLS, drops;
+  const CELL = 22;      // grid cell width
+  const SIZE = 14;      // heart size
+
   function resize(){
-    w = canvas.width = window.innerWidth;
-    h = canvas.height = window.innerHeight;
-    const fontSize = 20; // a bit bigger for hearts
-    ctx.font = fontSize + 'px monospace';
-    columns = Math.floor(w / fontSize);
-    drops = new Array(columns).fill(0).map(()=> Math.random()*h);
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    COLS = Math.floor(W / CELL);
+    drops = new Array(COLS).fill(0).map(()=> Math.random()*H);
   }
   window.addEventListener('resize', resize);
   resize();
+
+  function drawHeart(x, y, s, color){
+    // draw a smooth vector heart centered at (x,y)
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(0, -s*0.25);
+    ctx.bezierCurveTo(s*0.5, -s*0.85, s*1.2, -s*0.1, 0, s);
+    ctx.bezierCurveTo(-s*1.2, -s*0.1, -s*0.5, -s*0.85, 0, -s*0.25);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
   function rain(){
+    // subtle trail
     ctx.fillStyle = 'rgba(11,15,16,0.18)';
-    ctx.fillRect(0,0,w,h);
-    for(let i=0;i<columns;i++){
-      const ch = glyphs[Math.floor(Math.random()*glyphs.length)];
-      ctx.fillStyle = 'rgba(255,92,162,0.9)';
-      ctx.fillText(ch, i*20, drops[i]*1.0);
+    ctx.fillRect(0,0,W,H);
+
+    for(let i=0; i<COLS; i++){
+      const x = i*CELL + CELL/2;
+      const y = drops[i];
+      drawHeart(x, y, SIZE, 'rgba(255,92,162,0.92)');
+
+      // fall speed
       drops[i] += 1 + Math.random()*0.9;
-      if(drops[i]*20 > h + Math.random()*200){
+      if(drops[i] > H + Math.random()*200){
         drops[i] = -Math.random()*50;
       }
     }
     requestAnimationFrame(rain);
   }
   rain();
+
+  // ---------- Typewriter ----------
   const lines = [
     'compiling reasons I adore you...\n',
     '1) you make hard days soft.\n',
@@ -123,7 +136,6 @@
       if(tick && current[j-1] !== '\n') { try{ tick.currentTime = 0; tick.play().catch(()=>{});}catch(e){} }
       setTimeout(typeNext, 36 + Math.random()*70);
     } else {
-      typeEl.textContent += (i < lines.length-1) ? '' : '';
       i++; j=0;
       if(i < lines.length) typeEl.textContent += '\n' + 'howard@heart:~$ ';
       setTimeout(typeNext, 420);
@@ -131,6 +143,8 @@
   }
   typeEl.textContent = '';
   setTimeout(typeNext, 700);
+
+  // ---------- Controls ----------
   document.getElementById('replay').addEventListener('click', ()=>{
     i=0; j=0; playing=true; typeEl.textContent=''; cursor.style.display='inline-block'; typeNext();
   });
