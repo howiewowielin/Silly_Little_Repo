@@ -53,17 +53,15 @@
         <span>status: <span class="tag">200 OK</span> — sent with 💗</span>
         <div class="btns">
           <button class="btn" id="replay">replay</button>
+          <button class="btn" id="sound">sound: off</button>
           <button class="btn" id="share">copy link</button>
         </div>
       </div>
     </div>
   </div>
-  <div class="hint">tip: sound on for tiny keyclicks 🎧</div>
-  <audio id="tick" preload="auto">
-    <source src="data:audio/mp3;base64,//uQZAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQAAABN..." type="audio/mpeg">
-  </audio>
+  <div class="hint">tap anywhere once to unlock sound 🎧</div>
 <script>
-  // ---------- Canvas Heart Rain (no emoji required) ----------
+  // ---------- Canvas Heart Rain (vector hearts) ----------
   const canvas = document.getElementById('matrix');
   const ctx = canvas.getContext('2d');
   let W, H, COLS, drops;
@@ -80,7 +78,6 @@
   resize();
 
   function drawHeart(x, y, s, color){
-    // draw a smooth vector heart centered at (x,y)
     ctx.save();
     ctx.translate(x, y);
     ctx.fillStyle = color;
@@ -94,16 +91,12 @@
   }
 
   function rain(){
-    // subtle trail
     ctx.fillStyle = 'rgba(11,15,16,0.18)';
     ctx.fillRect(0,0,W,H);
-
     for(let i=0; i<COLS; i++){
       const x = i*CELL + CELL/2;
       const y = drops[i];
       drawHeart(x, y, SIZE, 'rgba(255,92,162,0.92)');
-
-      // fall speed
       drops[i] += 1 + Math.random()*0.9;
       if(drops[i] > H + Math.random()*200){
         drops[i] = -Math.random()*50;
@@ -113,7 +106,30 @@
   }
   rain();
 
-  // ---------- Typewriter ----------
+  // ---------- WebAudio beep sound ----------
+  let soundOn = false;
+  let ac = null;
+  document.addEventListener('pointerdown', () => {
+    ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+    if(ac.state === 'suspended') ac.resume();
+  }, {once:true});
+
+  function playBeep(){
+    if(!soundOn || !ac) return;
+    const o = ac.createOscillator();
+    const g = ac.createGain();
+    o.type = 'square';
+    o.frequency.value = 880 + Math.random()*120;
+    g.gain.value = 0.1;
+    o.connect(g); g.connect(ac.destination);
+    const now = ac.currentTime;
+    g.gain.setValueAtTime(0.1, now);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + 0.05);
+    o.start(now);
+    o.stop(now + 0.06);
+  }
+
+  // ---------- Typewriter with beep ----------
   const lines = [
     'compiling reasons I adore you baobei...\n',
     '1) you sometimes make my monotone voice less monotone\n',
@@ -125,7 +141,6 @@
   ];
   const typeEl = document.getElementById('type');
   const cursor = document.getElementById('cursor');
-  const tick = document.getElementById('tick');
   let i=0, j=0, playing=true;
   function typeNext(){
     if(!playing) return;
@@ -134,7 +149,7 @@
     if(j < current.length){
       typeEl.textContent += current[j];
       j++;
-      if(tick && current[j-1] !== '\n') { try{ tick.currentTime = 0; tick.play().catch(()=>{});}catch(e){} }
+      if(current[j-1] !== '\n') playBeep();
       setTimeout(typeNext, 36 + Math.random()*70);
     } else {
       i++; j=0;
@@ -148,6 +163,10 @@
   // ---------- Controls ----------
   document.getElementById('replay').addEventListener('click', ()=>{
     i=0; j=0; playing=true; typeEl.textContent=''; cursor.style.display='inline-block'; typeNext();
+  });
+  document.getElementById('sound').addEventListener('click', ()=>{
+    soundOn = !soundOn;
+    document.getElementById('sound').textContent = soundOn ? 'sound: on' : 'sound: off';
   });
   document.getElementById('share').addEventListener('click', async ()=>{
     try{
