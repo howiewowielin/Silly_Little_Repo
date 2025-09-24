@@ -211,6 +211,14 @@ document.getElementById('startGame').addEventListener('click', ()=>{
   document.getElementById('game').style.display='grid';
   inputs[0]?.focus();
 });
+// --- Developer shortcut: hold Shift and press Q to skip crossword ---
+document.addEventListener('keydown', function(e) {
+  if (e.key.toLowerCase() === 'q' && e.shiftKey) {
+    // instantly redirect to the bouquet page
+    window.location.href = BOUQUET_URL;
+  }
+});
+
 </script>
 </body>
 </html>
