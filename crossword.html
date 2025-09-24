@@ -6,7 +6,6 @@
 <title>for you 💖</title>
 <style>
 :root{
-  /* Responsive cell size for phones/tablets/desktops */
   --cell: clamp(34px, 8.5vw, 46px);
   --bg:#0b0f10; --fg:#d9f2e6; --accent:#ff5ca2; --muted:#7aa48a;
 }
@@ -14,7 +13,6 @@ html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
 button, input{font-family:inherit}
 
-/* Buttons (large for mobile) */
 .btn{
   appearance:none; border:1px solid rgba(255,92,162,.35); background:rgba(255,92,162,.10);
   color:var(--fg); padding:14px 20px; font-size:16px; border-radius:999px; cursor:pointer;
@@ -23,7 +21,6 @@ button, input{font-family:inherit}
 .btn:hover{transform:translateY(-1px)}
 .btn.primary{background:rgba(255,92,162,.18); font-weight:600}
 
-/* Card layout */
 .shell{min-height:100vh; display:grid; place-items:center; padding:16px}
 .card{
   width:min(960px,95vw); background:rgba(12,16,17,.82);
@@ -39,10 +36,12 @@ button, input{font-family:inherit}
 .title{margin-left:6px; font-size:12px; letter-spacing:.04em; color:var(--muted)}
 .content{padding:14px}
 
-/* Intro photo — a bit smaller on phones */
+/* Intro photo – show full image, smaller, no crop */
 figure{margin:0}
 #hero{
-  display:block; width:100%; height: min(48vh, 520px); object-fit:cover; background:#111
+  display:block; width:100%;
+  height:auto; max-height: min(42vh, 420px);
+  object-fit:contain; background:#111;
 }
 #heroCaption{padding:12px 14px; font-size:18px; text-align:center}
 
@@ -61,7 +60,6 @@ figure{margin:0}
 .cell input{
   width:100%; height:100%; background:transparent; border:0; outline:none; text-align:center;
   color:var(--fg); font-weight:700; font-size:18px; text-transform:uppercase;
-  /* iOS: keep font-size >=16px to prevent zoom-on-focus */
   -webkit-appearance:none; caret-color:var(--accent);
 }
 .cell input:focus{box-shadow:inset 0 0 0 2px rgba(255,92,162,.35)}
@@ -76,10 +74,7 @@ figure{margin:0}
   padding:12px 16px 14px; font-size:12px; color:var(--muted); border-top:1px solid rgba(255,92,162,.14)
 }
 
-/* Mobile tweaks */
-@media (max-width:520px){
-  .clues{grid-template-columns:1fr}
-}
+@media (max-width:520px){ .clues{grid-template-columns:1fr} }
 </style>
 </head>
 <body>
@@ -100,7 +95,7 @@ figure{margin:0}
   </div>
 </div>
 
-<!-- REAL CROSSWORD -->
+<!-- CROSSWORD -->
 <div id="game" class="shell" style="display:none">
   <div class="card">
     <div class="bar"><span class="title">// mini crossword — solve to unlock your bouquet</span></div>
@@ -108,14 +103,8 @@ figure{margin:0}
       <div id="grid" class="grid" aria-label="crossword grid"></div>
 
       <div class="clues">
-        <div>
-          <h3>Across</h3>
-          <ol id="acrossList"></ol>
-        </div>
-        <div>
-          <h3>Down</h3>
-          <ol id="downList"></ol>
-        </div>
+        <div><h3>Across</h3><ol id="acrossList"></ol></div>
+        <div><h3>Down</h3><ol id="downList"></ol></div>
       </div>
     </div>
     <div class="footer">
@@ -129,19 +118,15 @@ figure{margin:0}
 </div>
 
 <script>
-// ========= CONFIG =========
-const BOUQUET_URL = "https://howiewowielin.github.io/Silly_Little_Repo/flowers_for_her"; // <-- set your bouquet URL
+const BOUQUET_URL = "https://howiewowielin.github.io/Silly_Little_Repo/flowers_for_her";
 
-// Define the words with their clues (no numbers; we compute numbering automatically)
 const WORDS = [
-  // Across placements (row, col are 0-indexed start positions)
   {dir:"across", answer:"MINTCHOCOLATE", row:0, col:0, clue:"what’s Adri’s favourite ice cream flavour"},
   {dir:"across", answer:"NOV",           row:1, col:3, clue:"what month is my birthday"},
   {dir:"across", answer:"YOURASS",       row:2, col:1, clue:"what do I like smacking"},
   {dir:"across", answer:"UNIVERSAL",     row:3, col:1, clue:"where was our first date"},
   {dir:"across", answer:"RED",           row:4, col:3, clue:"what’s my favourite colour?"},
   {dir:"across", answer:"WILLIAM",       row:6, col:8, clue:"first name of my favourite DJ"},
-  // Down placements
   {dir:"down",   answer:"CORVETTE",      row:0, col:4, clue:"what is my dream car"},
   {dir:"down",   answer:"BMW",           row:4, col:6, clue:"what car do I drive"},
   {dir:"down",   answer:"SUSHI",         row:3, col:7, clue:"what is my favourite food"},
@@ -149,12 +134,9 @@ const WORDS = [
 ];
 
 const ROWS = 15, COLS = 15;
-
-// ========= BUILD GRID =========
 const gridEl = document.getElementById('grid');
 const grid = Array.from({length:ROWS},()=>Array.from({length:COLS},()=>({block:true, num:null, sol:null})));
 
-// Place letters from all words
 for(const w of WORDS){
   const A = w.answer.toUpperCase();
   for(let i=0;i<A.length;i++){
@@ -165,84 +147,43 @@ for(const w of WORDS){
   }
 }
 
-// Compute numbering automatically (scan left-to-right, top-to-bottom)
 let nextNum = 1;
-const indexByStart = new Map(); // key "r,c,dir" -> word
-for(const w of WORDS){
-  indexByStart.set(`${w.row},${w.col},${w.dir}`, w);
-}
+const acrossSeq = WORDS.filter(w=>w.dir==='across');
+const downSeq   = WORDS.filter(w=>w.dir==='down');
+for(const w of acrossSeq){ w.num = nextNum++; }
+for(const w of downSeq){   w.num = nextNum++; }
+for(const w of WORDS){ grid[w.row][w.col].num = w.num; }
 
-for(let r=0;r<ROWS;r++){
-  for(let c=0;c<COLS;c++){
-    if(grid[r][c].block) continue;
-
-    // start of across?
-    const startsAcross = (c===0 || grid[r][c-1].block) && (c+1<COLS && !grid[r][c+1].block);
-    if(startsAcross){
-      grid[r][c].num = grid[r][c].num ?? nextNum;
-      const key = `${r},${c},across`;
-      if(indexByStart.has(key)) indexByStart.get(key).num = grid[r][c].num;
-      nextNum++;
-    }
-
-    // start of down?
-    const startsDown = (r===0 || grid[r-1][c].block) && (r+1<ROWS && !grid[r+1][c].block);
-    if(startsDown){
-      // If same cell already got an across number, reuse it; else assign new
-      if(grid[r][c].num == null){ grid[r][c].num = nextNum; nextNum++; }
-      const key = `${r},${c},down`;
-      if(indexByStart.has(key)) indexByStart.get(key).num = grid[r][c].num;
-    }
-  }
-}
-
-// Render grid
 const inputs = [];
 for(let r=0;r<ROWS;r++){
   for(let c=0;c<COLS;c++){
     const cell = grid[r][c];
     const d = document.createElement('div');
-    if(cell.block){
-      d.className='cell block';
-      gridEl.appendChild(d);
-      continue;
-    }
+    if(cell.block){ d.className='cell block'; gridEl.appendChild(d); continue; }
     d.className='cell';
     if(cell.num){ const s=document.createElement('span'); s.className='num'; s.textContent=cell.num; d.appendChild(s); }
     const i = document.createElement('input');
-    i.setAttribute('maxlength','1');
-    i.setAttribute('inputmode','text');    // better iOS keyboard
-    i.setAttribute('autocomplete','off');
-    i.setAttribute('autocapitalize','characters');
-    i.dataset.r = r; i.dataset.c = c; i.dataset.sol = cell.sol;
-    i.addEventListener('input', (e)=>{
+    i.setAttribute('maxlength','1'); i.setAttribute('inputmode','text');
+    i.setAttribute('autocomplete','off'); i.setAttribute('autocapitalize','characters'); i.setAttribute('autocorrect','off');
+    i.dataset.sol = cell.sol;
+    i.addEventListener('input', e=>{
       e.target.value = e.target.value.toUpperCase().replace(/[^A-Z]/g,'');
-      // auto-advance to next cell in the same word if typing
-      if(e.target.value.length===1){
-        const next = e.target.nextElementSibling; // not reliable in grid; skip auto-nav here to avoid confusion
-      }
     });
-    d.appendChild(i);
-    gridEl.appendChild(d);
-    inputs.push(i);
+    d.appendChild(i); gridEl.appendChild(d); inputs.push(i);
   }
 }
 
-// Render clues with computed numbers (no user numbering)
-function byDir(dir){ return WORDS.filter(w=>w.dir===dir).sort((a,b)=>a.num-b.num); }
-function fillClueList(listEl, words){
-  listEl.innerHTML = '';
+function fillClueList(el, words){
+  el.innerHTML = '';
   for(const w of words){
     const li = document.createElement('li');
-    const len = w.answer.length;
-    li.innerHTML = `<strong>${w.num}</strong>. ${w.clue} (${len})`;
-    listEl.appendChild(li);
+    li.innerHTML = `<strong>${w.num}</strong>. ${w.clue} (${w.answer.length})`;
+    el.appendChild(li);
   }
 }
-fillClueList(document.getElementById('acrossList'), byDir('across'));
-fillClueList(document.getElementById('downList'), byDir('down'));
+fillClueList(document.getElementById('acrossList'), acrossSeq);
+fillClueList(document.getElementById('downList'),   downSeq);
 
-// Check / Clear
 function norm(x){return (x||'').toUpperCase();}
 function isCorrect(i){ return norm(i.value) === norm(i.dataset.sol); }
 
@@ -256,12 +197,8 @@ document.getElementById('check').addEventListener('click', ()=>{
     i.classList.toggle('bad', filled && !good);
     if(!good) ok = false;
   });
-  if(ok && allFilled){
-    window.location.href = BOUQUET_URL;
-  }else{
-    // focus first empty or incorrect cell to help on phones
-    (inputs.find(i=>!i.value) || inputs.find(i=>!isCorrect(i)) || inputs[0]).focus();
-  }
+  if(ok && allFilled) window.location.href = BOUQUET_URL;
+  else (inputs.find(i=>!i.value) || inputs.find(i=>!isCorrect(i)) || inputs[0]).focus();
 });
 
 document.getElementById('clear').addEventListener('click', ()=>{
@@ -269,7 +206,6 @@ document.getElementById('clear').addEventListener('click', ()=>{
   inputs[0]?.focus();
 });
 
-// Intro → game
 document.getElementById('startGame').addEventListener('click', ()=>{
   document.getElementById('intro').style.display='none';
   document.getElementById('game').style.display='grid';
