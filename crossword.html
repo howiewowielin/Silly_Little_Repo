@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>for you 💖</title>
+<style>
+:root{--bg:#0b0f10;--fg:#d9f2e6;--accent:#ff5ca2;--muted:#7aa48a;}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+.btn{appearance:none;border:1px solid rgba(255,92,162,.35);background:rgba(255,92,162,.08);color:var(--fg);
+     padding:10px 14px;font-size:14px;border-radius:999px;cursor:pointer;
+     transition:.2s transform,.2s opacity;backdrop-filter:blur(6px)}
+.btn:hover{transform:translateY(-1px)}
+.shell{min-height:100vh;display:grid;place-items:center;padding:24px}
+.card{width:min(920px,94vw);background:rgba(12,16,17,.82);
+      border:1px solid rgba(255,92,162,.25);border-radius:18px;
+      box-shadow:0 20px 80px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,92,162,.12);
+      overflow:hidden}
+.bar{display:flex;align-items:center;gap:10px;padding:12px 14px;
+     background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+     border-bottom:1px solid rgba(255,92,162,.18)}
+.title{margin-left:6px;font-size:12px;letter-spacing:.04em;color:var(--muted)}
+.content{padding:16px}
+.clue{font-size:14px;color:var(--muted)}
+.cw{width:100%;padding:10px 12px;border-radius:12px;
+    border:1px solid rgba(255,92,162,.25);background:rgba(255,255,255,.03);color:var(--fg)}
+.footer{display:flex;justify-content:space-between;align-items:center;
+        padding:12px 16px 14px;font-size:12px;color:var(--muted);
+        border-top:1px solid rgba(255,92,162,.14)}
+</style>
+</head>
+<body>
+
+<!-- INTRO WITH PHOTO -->
+<div id="intro" class="shell">
+  <div class="card">
+    <div class="bar"><span class="title">// for you</span></div>
+    <figure style="margin:0">
+      <img id="hero" alt="us" style="display:block;width:100%;height:auto;object-fit:cover;background:#111"
+           src="data:image/png;base64,REPLACE_WITH_YOUR_IMAGE_BASE64"/>
+      <figcaption id="heroCaption" style="padding:14px 16px;font-size:18px;text-align:center">
+        I miss you
+      </figcaption>
+      <!-- ↑ To change the caption, edit this text or in JS:
+           document.getElementById('heroCaption').textContent = 'YOUR CAPTION'; -->
+    </figure>
+    <div class="content" style="display:flex;justify-content:center;border-top:1px solid rgba(255,92,162,.14)">
+      <button class="btn" id="startGame">click to start the game</button>
+    </div>
+  </div>
+</div>
+
+<!-- MINI CROSSWORD -->
+<div id="game" class="shell" style="display:none">
+  <div class="card">
+    <div class="bar"><span class="title">// mini crossword — solve to unlock your bouquet</span></div>
+    <div class="content">
+      <div style="color:var(--muted);font-size:14px;margin-bottom:8px">
+        Type the answers (not case-sensitive). Spaces are okay.
+      </div>
+      <div class="clue"><strong>1.</strong> where was our first date</div>
+      <input class="cw" data-answer="universal" placeholder="Answer 1"/>
+      <div class="clue"><strong>2.</strong> What is my dream car</div>
+      <input class="cw" data-answer="corvette" placeholder="Answer 2"/>
+      <div class="clue"><strong>3.</strong> What car do I drive</div>
+      <input class="cw" data-answer="bmw" placeholder="Answer 3"/>
+      <div class="clue"><strong>4.</strong> What is my favourite food</div>
+      <input class="cw" data-answer="sushi" placeholder="Answer 4"/>
+      <div class="clue"><strong>5.</strong> What month is my birthday</div>
+      <input class="cw" data-answer="nov" placeholder="Answer 5"/>
+      <div class="clue"><strong>6.</strong> First name of my favourite DJ</div>
+      <input class="cw" data-answer="william" placeholder="Answer 6"/>
+      <div class="clue"><strong>7.</strong> What do I like smacking</div>
+      <input class="cw" data-answer="yourass" placeholder="Answer 7"/>
+      <div class="clue"><strong>8.</strong> Whats Adri's favourite ice cream flavour</div>
+      <input class="cw" data-answer="mintchocolate" placeholder="Answer 8"/>
+      <div class="clue"><strong>9.</strong> Adri's favourite colour</div>
+      <input class="cw" data-answer="blue" placeholder="Answer 9"/>
+      <div class="clue"><strong>10.</strong> Whats my favourite colour?</div>
+      <input class="cw" data-answer="red" placeholder="Answer 10"/>
+    </div>
+    <div class="footer">
+      <span>solve all answers to unlock your bouquet 💐</span>
+      <div style="display:flex;gap:10px">
+        <button class="btn" id="check">check answers</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const BOUQUET_URL = "https://yourusername.github.io/roses/"; // <-- change to your bouquet page URL
+
+document.getElementById('startGame').addEventListener('click', ()=>{
+  document.getElementById('intro').style.display='none';
+  document.getElementById('game').style.display='grid';
+});
+
+function norm(s){return (s||'').toLowerCase().replace(/\\s+/g,'').trim();}
+document.getElementById('check').addEventListener('click', ()=>{
+  let allGood = true;
+  document.querySelectorAll('#game .cw').forEach(inp=>{
+    const ok = norm(inp.value) === norm(inp.dataset.answer);
+    inp.style.border = ok ? '1px solid #2ecc71' : '1px solid #ff5ca2';
+    if(!ok) allGood = false;
+  });
+  if(allGood){
+    window.location.href = BOUQUET_URL; // redirect to your bouquet when solved
+  }
+});
+</script>
+</body>
+</html>
