@@ -211,13 +211,39 @@ document.getElementById('startGame').addEventListener('click', ()=>{
   document.getElementById('game').style.display='grid';
   inputs[0]?.focus();
 });
-// --- Developer shortcut: hold Shift and press Q to skip crossword ---
+// ===== DEV SHORTCUTS =====
+
+// Shift+Q (desktop/laptop)
 document.addEventListener('keydown', function(e) {
-  if (e.key.toLowerCase() === 'q' && e.shiftKey) {
-    // instantly redirect to the bouquet page
-    window.location.href = BOUQUET_URL;
+  if (e.key && e.key.toLowerCase() === 'q' && e.shiftKey) {
+    window.location.href = BOUQUET_URL; // skip crossword
   }
 });
+
+// 'q' x3 within 1500ms (phone-friendly)
+(function(){
+  let queue = [];
+  const WINDOW_MS = 1500;
+
+  function maybeSkip() {
+    const now = Date.now();
+    // keep only recent keypresses
+    queue = queue.filter(t => now - t < WINDOW_MS);
+    if (queue.length >= 3) {
+      window.location.href = BOUQUET_URL;
+    }
+  }
+
+  // Works even when typing inside input boxes
+  document.addEventListener('keydown', function(e){
+    if (!e.key) return;
+    if (e.key.toLowerCase() === 'q') {
+      queue.push(Date.now());
+      maybeSkip();
+    }
+  });
+})();
+
 
 </script>
 </body>
