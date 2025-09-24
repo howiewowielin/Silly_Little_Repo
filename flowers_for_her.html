@@ -5,194 +5,278 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>a little surprise 🌹</title>
 <style>
-:root{
-  --bg:#0b0f10; --fg:#e9f7f0; --muted:#9bb5a8;
-  --rose1:#ff92c5; --rose2:#ff6fb3; --roseCore:#e05296;
-  --leaf1:#7ce9b2; --leaf2:#4ec58c;
-  --rib:#ff8fc6; --rib2:#ff6db6;
-}
-*{box-sizing:border-box}
-html,body{height:100%}
-body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;overflow:hidden}
-.stage{min-height:100dvh;display:grid;place-items:center;padding:24px}
-.card{
-  position:relative;width:min(980px,95vw);height:min(640px,78vh);
-  background:rgba(12,16,17,.82);border:1px solid #ffffff18;border-radius:18px;overflow:hidden;
-  box-shadow:0 25px 120px rgba(0,0,0,.55), inset 0 0 0 1px #ffffff0f
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  background: #0b0f10;
+  color: #e9f7f0;
+  font-family: system-ui, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
-/* Centered SVG that always fits */
-.center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
-svg#art{display:block;width:min(640px,92vw);height:auto;}
-
-/* Particles (super light) */
-.fx{position:absolute;inset:0;pointer-events:none}
-.p{position:absolute;width:12px;height:12px;opacity:.85;transform:translate(-50%,-50%)}
-.heart::before,.heart::after{content:"";position:absolute;width:100%;height:100%;background:var(--rose2)}
-.heart::before{transform:translate(0,-50%) rotate(45deg);border-radius:50%}
-.heart::after{transform:translate(-50%,0);border-radius:50%}
-.star{
-  background:radial-gradient(#ffd26a,#ffc76a 40%,#e4a93f 60%,#0000 61%);
-  clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
-  box-shadow:0 0 8px #ffd26a66
+.container {
+  text-align: center;
+  position: relative;
 }
 
-/* Animations */
-@keyframes bloom{0%{transform:scale(.85);opacity:0}60%{opacity:1}100%{transform:scale(1)}}
-@keyframes sway{0%{transform:rotate(-2deg)}100%{transform:rotate(2deg)}}
-@keyframes floatUp{0%{transform:translate(var(--x),var(--y)) scale(.9);opacity:0}
-  10%{opacity:.9}100%{transform:translate(calc(var(--x) + var(--dx)),calc(var(--y) + var(--dy))) scale(1.05);opacity:0}}
-.bloom{opacity:0;animation:bloom .9s ease-out forwards}
-.sway{transform-origin:50% 100%;animation:sway 6s ease-in-out infinite alternate}
+svg {
+  width: min(92vw, 560px);
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
 
-/* Note */
-.note{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);
-  background:#0006;color:#fff;padding:10px 14px;border-radius:14px;border:1px solid #ffffff18;font-size:16px;text-align:center}
-.badge{position:absolute;top:10px;left:50%;transform:translateX(-50%);color:var(--muted);font-size:12px}
+.note {
+  margin-top: 20px;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 15px;
+  border: 1px solid rgba(255,255,255,0.1);
+  font-size: 16px;
+}
 
-/* Respect reduced motion */
-@media (prefers-reduced-motion:reduce){
-  .bloom,.sway{animation:none}
-  .p{animation:none}
+/* Simple animations */
+@keyframes bloom {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes sway {
+  0%, 100% { transform: rotate(-1deg); }
+  50% { transform: rotate(1deg); }
+}
+
+.rose {
+  animation: bloom 1s ease-out forwards, sway 4s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+
+.stem {
+  animation: bloom 0.8s ease-out forwards;
+}
+
+.leaf {
+  animation: bloom 1.2s ease-out forwards;
+}
+
+/* Floating particles */
+.particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  opacity: 0.7;
+}
+
+.heart {
+  background: #ff6fb3;
+  transform: rotate(45deg);
+  border-radius: 50% 0;
+}
+
+.heart:before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  background: #ff6fb3;
+  border-radius: 50%;
+}
+
+.heart:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -4px;
+  width: 8px;
+  height: 8px;
+  background: #ff6fb3;
+  border-radius: 50%;
+}
+
+@keyframes float {
+  0% { transform: translateY(0) scale(0.8); opacity: 0; }
+  10% { opacity: 0.7; }
+  100% { transform: translateY(-100vh) scale(1); opacity: 0; }
 }
 </style>
 </head>
 <body>
-<div class="stage">
-  <div class="card" role="region" aria-label="pink rose surprise">
-    <div class="badge">// a little surprise</div>
+<div class="container">
+  <svg viewBox="0 0 320 460">
+    <defs>
+      <!-- Multiple petal gradients -->
+      <radialGradient id="petalPink" cx="50%" cy="30%" r="60%">
+        <stop offset="0%" stop-color="#ffe0ef"/>
+        <stop offset="60%" stop-color="#ff92c5"/>
+        <stop offset="100%" stop-color="#ff6fb3"/>
+      </radialGradient>
+      <radialGradient id="petalRed" cx="50%" cy="30%" r="60%">
+        <stop offset="0%" stop-color="#ffd4d4"/>
+        <stop offset="60%" stop-color="#ff6b6b"/>
+        <stop offset="100%" stop-color="#e63946"/>
+      </radialGradient>
+      <radialGradient id="petalPeach" cx="50%" cy="30%" r="60%">
+        <stop offset="0%" stop-color="#ffefe0"/>
+        <stop offset="60%" stop-color="#ffc2a1"/>
+        <stop offset="100%" stop-color="#ff8a5b"/>
+      </radialGradient>
+      <radialGradient id="petalLav" cx="50%" cy="30%" r="60%">
+        <stop offset="0%" stop-color="#efe0ff"/>
+        <stop offset="60%" stop-color="#c49bff"/>
+        <stop offset="100%" stop-color="#9b6bff"/>
+      </radialGradient>
+      <linearGradient id="leaf" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#7ce9b2"/>
+        <stop offset="100%" stop-color="#4ec58c"/>
+      </linearGradient>
+      <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#fff8f0"/>
+        <stop offset="100%" stop-color="#f5ebe0"/>
+      </linearGradient>
+      <linearGradient id="bow" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#ff8fc6"/>
+        <stop offset="100%" stop-color="#ff6db6"/>
+      </linearGradient>
+    </defs>
 
-    <!-- Pretty roses, clean gradients, simple animations -->
-    <div class="center">
-      <svg id="art" viewBox="0 0 560 620" preserveAspectRatio="xMidYMid meet" aria-label="surprise">
-        <defs>
-          <!-- Petal gradients -->
-          <radialGradient id="petal" cx="50%" cy="35%" r="70%">
-            <stop offset="0%"  stop-color="#ffd7ec"/>
-            <stop offset="45%" stop-color="var(--rose1)"/>
-            <stop offset="100%" stop-color="var(--rose2)"/>
-          </radialGradient>
-          <radialGradient id="gloss" cx="42%" cy="28%" r="50%">
-            <stop offset="0%" stop-color="#fff8"/>
-            <stop offset="60%" stop-color="#fff2"/>
-            <stop offset="100%" stop-color="#fff0"/>
-          </radialGradient>
-          <linearGradient id="leaf" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="var(--leaf1)"/><stop offset="100%" stop-color="var(--leaf2)"/>
-          </linearGradient>
-          <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="1.8" result="b"/>
-            <feOffset dy="1.3" result="o"/>
-            <feMerge><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge>
-          </filter>
+    <!-- Stems (drawn first so wrapper can cover them) -->
+    <g class="stem" stroke="#66d6a1" stroke-width="2.5" fill="none">
+      <!-- center -->
+      <path d="M150 350 C 150 300, 150 220, 150 150"/>
+      <!-- left inner -->
+      <path d="M135 345 C 132 300, 136 230, 145 160"/>
+      <!-- right inner -->
+      <path d="M165 345 C 168 300, 164 230, 155 160"/>
+      <!-- far left -->
+      <path d="M120 340 C 112 300, 118 230, 130 170"/>
+      <!-- far right -->
+      <path d="M180 340 C 188 300, 182 230, 170 170"/>
+      <!-- mid left -->
+      <path d="M142 348 C 136 305, 140 235, 146 160"/>
+      <!-- mid right -->
+      <path d="M158 348 C 164 305, 160 235, 154 160"/>
+    </g>
 
-          <!-- Reusable rose symbol (layered petals) -->
-          <symbol id="rose" viewBox="-44 -44 88 88">
-            <g filter="url(#soft)">
-              <!-- back ring -->
-              <path d="M0 -26 C 15 -28, 28 -15, 26 0 C 24 16, 10 24, 0 26 C -10 24, -24 16, -26 0 C -28 -15, -15 -28, 0 -26 Z" fill="url(#petal)"/>
-              <!-- inner ring -->
-              <path d="M0 -18 C 11 -18, 18 -10, 18 0 C 16 11, 8 16, 0 18 C -8 16, -16 11, -18 0 C -18 -10, -11 -18, 0 -18 Z" fill="url(#petal)"/>
-              <!-- center -->
-              <path d="M0 -10 C 7 -10, 10 -4, 10 0 C 8 8, 4 10, 0 10 C -4 10, -8 8, -10 0 C -10 -4, -7 -10, 0 -10 Z" fill="url(#petal)"/>
-              <!-- swirl -->
-              <path d="M-6 -2 C -2 -8, 8 -8, 8 0 C 8 8, -4 8, -6 2" fill="none" stroke="var(--roseCore)" stroke-width="2" stroke-linecap="round"/>
-              <!-- highlight -->
-              <ellipse cx="-5" cy="-11" rx="8" ry="5" fill="url(#gloss)"/>
-            </g>
-          </symbol>
+    <!-- Bouquet wrapper (covers lower stems) -->
+    <g class="stem">
+      <path d="M80 300 L160 420 L240 300 Q160 330 80 300" fill="url(#paper)" stroke="#ddd" stroke-width="1"/>
+      <path d="M96 306 L160 402 L224 306" fill="none" stroke="#eee" stroke-width="1"/>
+    </g>
 
-          <!-- Leaf -->
-          <symbol id="leafShape" viewBox="-28 -14 56 28">
-            <path d="M-26 0 C -10 -12, 10 -12, 26 0 C 10 12, -10 12, -26 0 Z" fill="url(#leaf)"/>
-            <path d="M-22 0 L 22 0" stroke="#38a875" stroke-width="1.3" stroke-linecap="round"/>
-          </symbol>
-        </defs>
+    <!-- Leaves -->
+    <g class="leaf" fill="url(#leaf)">
+      <ellipse cx="125" cy="240" rx="12" ry="6" transform="rotate(-25 125 240)"/>
+      <ellipse cx="175" cy="250" rx="10" ry="5" transform="rotate(30 175 250)"/>
+      <ellipse cx="140" cy="270" rx="11" ry="6" transform="rotate(-15 140 270)"/>
+      <ellipse cx="160" cy="275" rx="9" ry="5" transform="rotate(20 160 275)"/>
+      <ellipse cx="130" cy="290" rx="10" ry="5" transform="rotate(-10 130 290)"/>
+      <ellipse cx="170" cy="285" rx="8" ry="4" transform="rotate(15 170 285)"/>
+    </g>
 
-        <!-- stems -->
-        <g stroke="#66d6a1" stroke-width="4" stroke-linecap="round" fill="none" opacity=".96" class="bloom" style="animation-delay:.05s">
-          <path d="M280 600 C 275 500, 270 420, 260 330"/>
-          <path d="M284 600 C 292 515, 310 430, 330 340"/>
-          <path d="M276 600 C 268 520, 250 450, 235 365"/>
-          <path d="M288 600 C 295 520, 302 460, 308 380"/>
-          <path d="M272 600 C 266 530, 262 470, 258 395"/>
-        </g>
+    <!-- Roses in bouquet formation (larger, varied colors) -->
+    <g class="rose">
+      <!-- Top center -->
+      <g transform="translate(160,150)">
+        <circle cx="0" cy="0" r="24" fill="url(#petalPink)"/>
+        <circle cx="0" cy="0" r="18" fill="url(#petalPink)" opacity="0.85"/>
+        <circle cx="0" cy="0" r="11" fill="url(#petalPink)" opacity="0.65"/>
+      </g>
+      
+      <!-- Second row -->
+      <g transform="translate(138,168)">
+        <circle cx="0" cy="0" r="20" fill="url(#petalRed)"/>
+        <circle cx="0" cy="0" r="14" fill="url(#petalRed)" opacity="0.85"/>
+        <circle cx="0" cy="0" r="8" fill="url(#petalRed)" opacity="0.65"/>
+      </g>
+      <g transform="translate(182,168)">
+        <circle cx="0" cy="0" r="20" fill="url(#petalPeach)"/>
+        <circle cx="0" cy="0" r="14" fill="url(#petalPeach)" opacity="0.85"/>
+        <circle cx="0" cy="0" r="8" fill="url(#petalPeach)" opacity="0.65"/>
+      </g>
+      
+      <!-- Third row -->
+      <g transform="translate(120,190)">
+        <circle cx="0" cy="0" r="18" fill="url(#petalLav)"/>
+        <circle cx="0" cy="0" r="12" fill="url(#petalLav)" opacity="0.85"/>
+        <circle cx="0" cy="0" r="7" fill="url(#petalLav)" opacity="0.65"/>
+      </g>
+      <g transform="translate(200,190)">
+        <circle cx="0" cy="0" r="18" fill="url(#petalPink)"/>
+        <circle cx="0" cy="0" r="12" fill="url(#petalPink)" opacity="0.85"/>
+        <circle cx="0" cy="0" r="7" fill="url(#petalPink)" opacity="0.65"/>
+      </g>
+      
+      <!-- Fourth row -->
+      <g transform="translate(150,185)">
+        <circle cx="0" cy="0" r="17" fill="url(#petalRed)"/>
+        <circle cx="0" cy="0" r="11" fill="url(#petalRed)" opacity="0.85"/>
+        <circle cx="0" cy="0" r="6" fill="url(#petalRed)" opacity="0.65"/>
+      </g>
+      <g transform="translate(170,185)">
+        <circle cx="0" cy="0" r="17" fill="url(#petalPeach)"/>
+        <circle cx="0" cy="0" r="11" fill="url(#petalPeach)" opacity="0.85"/>
+        <circle cx="0" cy="0" r="6" fill="url(#petalPeach)" opacity="0.65"/>
+      </g>
+    </g>
 
-        <!-- leaves -->
-        <g opacity=".96" class="bloom" style="animation-delay:.12s">
-          <use href="#leafShape" x="270" y="420" transform="rotate(-8 270 420)"/>
-          <use href="#leafShape" x="300" y="392" transform="rotate(14 300 392) scale(1.08)"/>
-          <use href="#leafShape" x="248" y="380" transform="rotate(-18 248 380)"/>
-          <use href="#leafShape" x="320" y="365" transform="rotate(9 320 365) scale(1.04)"/>
-        </g>
+    <!-- Bow with tails -->
+    <g class="stem" transform="translate(160,385)">
+      <!-- center knot -->
+      <rect x="-10" y="-8" width="20" height="16" rx="4" fill="url(#bow)"/>
+      <!-- left loop -->
+      <path d="M-10 0 C -38 -14, -54 6, -28 14 C -16 18, -10 10, -10 0 Z" fill="url(#bow)"/>
+      <!-- right loop -->
+      <path d="M10 0 C 38 -14, 54 6, 28 14 C 16 18, 10 10, 10 0 Z" fill="url(#bow)"/>
+      <!-- tails -->
+      <path d="M-6 8 L -18 46 Q -10 40 -2 30 Z" fill="url(#bow)"/>
+      <path d="M6 8 L 18 46 Q 10 40 2 30 Z" fill="url(#bow)"/>
+    </g>
+  </svg>
 
-        <!-- roses cluster -->
-        <g class="sway">
-          <use href="#rose" x="230" y="340" class="bloom" style="animation-delay:.18s; transform-origin:230px 380px"/>
-          <use href="#rose" x="285" y="322" class="bloom" style="animation-delay:.24s; transform-origin:285px 362px"/>
-          <use href="#rose" x="335" y="340" class="bloom" style="animation-delay:.30s; transform-origin:335px 380px"/>
-          <use href="#rose" x="255" y="370" class="bloom" style="animation-delay:.36s; transform-origin:255px 410px"/>
-          <use href="#rose" x="310" y="370" class="bloom" style="animation-delay:.42s; transform-origin:310px 410px"/>
-          <use href="#rose" x="280" y="360" class="bloom" style="animation-delay:.48s; transform-origin:280px 400px"/>
-        </g>
-
-        <!-- wrap + ribbon -->
-        <defs>
-          <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#ffe8f3"/><stop offset="100%" stop-color="#ffd3ea"/>
-          </linearGradient>
-          <linearGradient id="shadow" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#0000"/><stop offset="100%" stop-color="#0003"/>
-          </linearGradient>
-        </defs>
-        <g class="bloom" style="animation-delay:.55s">
-          <path d="M280 610 L140 370 Q280 430 420 370 Z" fill="url(#paper)" stroke="#ffffff66" stroke-width="2"/>
-          <path d="M280 610 L140 370 Q280 430 420 370 Z" fill="url(#shadow)"/>
-          <rect x="220" y="435" width="120" height="18" rx="9" fill="var(--rib)"/>
-          <g transform="translate(280,444)">
-            <rect x="-14" y="-10" width="28" height="20" rx="6" fill="var(--rib2)"/>
-            <path d="M-14 -6 C -48 -26, -58 10, -22 18 Z" fill="var(--rib)"/>
-            <path d="M14 -6 C 48 -26, 58 10, 22 18 Z" fill="var(--rib)"/>
-          </g>
-        </g>
-      </svg>
-    </div>
-
-    <!-- gentle hearts & stars -->
-    <div id="fx" class="fx" aria-hidden="true"></div>
-
-    <div id="note" class="note">💌 Thinking of you</div>
-  </div>
+  <div class="particles"></div>
+  <div class="note">💌 Thinking of you</div>
 </div>
 
 <script>
-/* Minimal, smooth particles floating around the roses */
-(function(){
-  const c = document.getElementById('fx');
-  const N = 20;
-  for(let i=0;i<N;i++){
-    const el = document.createElement('div');
-    el.className = 'p ' + (Math.random() < 0.65 ? 'heart' : 'star');
-    const startX = 50 + (Math.random()*26 - 13);
-    const startY = 70 + (Math.random()*12 - 6);
-    const dx = (Math.random()*140 - 70);
-    const dy = - (120 + Math.random()*200);
-    const dur = 5000 + Math.random()*4000;
-    const delay = Math.random()*3000;
-    el.style.left = startX + '%';
-    el.style.top  = startY + '%';
-    el.style.setProperty('--x','-50%');
-    el.style.setProperty('--y','-50%');
-    el.style.setProperty('--dx', dx + 'px');
-    el.style.setProperty('--dy', dy + 'px');
-    el.style.animation = `floatUp ${dur}ms ${delay}ms ease-in infinite`;
-    c.appendChild(el);
+function createFloatingHearts() {
+  const container = document.querySelector('.particles');
+  const heartCount = 8;
+  for (let i = 0; i < heartCount; i++) {
+    const heart = document.createElement('div');
+    heart.className = 'particle heart';
+    const startX = Math.random() * 100;
+    const startY = 60 + Math.random() * 30; // start around the bouquet area
+    const duration = 4000 + Math.random() * 3000;
+    const delay = Math.random() * 2000;
+    heart.style.left = startX + '%';
+    heart.style.top = startY + '%';
+    heart.style.animation = `float ${duration}ms ${delay}ms ease-in infinite`;
+    container.appendChild(heart);
   }
-})();
-
-// Optional custom note via ?note=Your%20message
-const q=new URLSearchParams(location.search);
-const n=q.get('note'); if(n) document.getElementById('note').textContent='💌 '+n;
+}
+createFloatingHearts();
+const urlParams = new URLSearchParams(window.location.search);
+const customNote = urlParams.get('note');
+if (customNote) {
+  document.querySelector('.note').textContent = '💌 ' + customNote;
+}
 </script>
 </body>
 </html>
