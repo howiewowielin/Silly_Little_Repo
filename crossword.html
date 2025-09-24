@@ -5,35 +5,81 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>for you 💖</title>
 <style>
-:root{--bg:#0b0f10;--fg:#d9f2e6;--accent:#ff5ca2;--muted:#7aa48a;--cell:44px;}
-html,body{height:100%} body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
-.btn{appearance:none;border:1px solid rgba(255,92,162,.35);background:rgba(255,92,162,.08);color:var(--fg);
-     padding:10px 14px;font-size:14px;border-radius:999px;cursor:pointer;transition:.2s transform,.2s opacity}
-.btn:hover{transform:translateY(-1px)}
-.shell{min-height:100vh;display:grid;place-items:center;padding:24px}
-.card{width:min(960px,95vw);background:rgba(12,16,17,.82);border:1px solid rgba(255,92,162,.25);
-      border-radius:18px;box-shadow:0 20px 80px rgba(0,0,0,.45),inset 0 0 0 1px rgba(255,92,162,.12);overflow:hidden}
-.bar{display:flex;align-items:center;gap:10px;padding:12px 14px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
-     border-bottom:1px solid rgba(255,92,162,.18)}
-.title{margin-left:6px;font-size:12px;letter-spacing:.04em;color:var(--muted)}
-.content{padding:16px}
+:root{
+  /* Responsive cell size for phones/tablets/desktops */
+  --cell: clamp(34px, 8.5vw, 46px);
+  --bg:#0b0f10; --fg:#d9f2e6; --accent:#ff5ca2; --muted:#7aa48a;
+}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+button, input{font-family:inherit}
 
-/* crossword grid */
-.grid{display:grid;grid-template-columns:repeat(15,var(--cell));grid-auto-rows:var(--cell);gap:2px;background:#0003;padding:6px;border-radius:12px;margin:auto}
-.cell{position:relative;width:var(--cell);height:var(--cell);background:#101618;border:1px solid #ffffff12;border-radius:6px;display:flex;align-items:center;justify-content:center}
-.block{background:#0a0f11;box-shadow:inset 0 0 0 1px #000}
-.num{position:absolute;top:3px;left:6px;font-size:10px;color:#a7c4b4}
-.cell input{width:100%;height:100%;background:transparent;border:0;outline:none;text-align:center;
-            color:var(--fg);font-weight:700;font-size:18px;text-transform:uppercase}
-.cell input::placeholder{color:#ffffff22}
+/* Buttons (large for mobile) */
+.btn{
+  appearance:none; border:1px solid rgba(255,92,162,.35); background:rgba(255,92,162,.10);
+  color:var(--fg); padding:14px 20px; font-size:16px; border-radius:999px; cursor:pointer;
+  transition:.2s transform,.2s opacity; backdrop-filter:blur(6px); touch-action:manipulation
+}
+.btn:hover{transform:translateY(-1px)}
+.btn.primary{background:rgba(255,92,162,.18); font-weight:600}
+
+/* Card layout */
+.shell{min-height:100vh; display:grid; place-items:center; padding:16px}
+.card{
+  width:min(960px,95vw); background:rgba(12,16,17,.82);
+  border:1px solid rgba(255,92,162,.25); border-radius:18px;
+  box-shadow:0 20px 80px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,92,162,.12);
+  overflow:hidden
+}
+.bar{
+  display:flex; align-items:center; gap:10px; padding:12px 14px;
+  background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+  border-bottom:1px solid rgba(255,92,162,.18)
+}
+.title{margin-left:6px; font-size:12px; letter-spacing:.04em; color:var(--muted)}
+.content{padding:14px}
+
+/* Intro photo — a bit smaller on phones */
+figure{margin:0}
+#hero{
+  display:block; width:100%; height: min(48vh, 520px); object-fit:cover; background:#111
+}
+#heroCaption{padding:12px 14px; font-size:18px; text-align:center}
+
+/* Grid */
+.grid{
+  display:grid; grid-template-columns:repeat(15, var(--cell));
+  grid-auto-rows:var(--cell); gap:2px; background:#0003; padding:6px;
+  border-radius:12px; margin:auto; touch-action:manipulation
+}
+.cell{
+  position:relative; width:var(--cell); height:var(--cell); background:#101618;
+  border:1px solid #ffffff12; border-radius:6px; display:flex; align-items:center; justify-content:center
+}
+.block{background:#0a0f11; box-shadow:inset 0 0 0 1px #000}
+.num{position:absolute; top:3px; left:6px; font-size:10px; color:#a7c4b4; user-select:none}
+.cell input{
+  width:100%; height:100%; background:transparent; border:0; outline:none; text-align:center;
+  color:var(--fg); font-weight:700; font-size:18px; text-transform:uppercase;
+  /* iOS: keep font-size >=16px to prevent zoom-on-focus */
+  -webkit-appearance:none; caret-color:var(--accent);
+}
+.cell input:focus{box-shadow:inset 0 0 0 2px rgba(255,92,162,.35)}
 .ok{box-shadow:inset 0 0 0 2px #2ecc71aa} .bad{box-shadow:inset 0 0 0 2px #ff5ca2aa}
 
-/* clue list */
-.clues{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px;color:var(--muted);font-size:14px}
-.clues h3{color:var(--fg);font-size:14px;margin:0 0 6px}
-.clues ol{margin:0;padding-left:20px}
-.footer{display:flex;justify-content:space-between;align-items:center;padding:12px 16px 14px;
-        font-size:12px;color:var(--muted);border-top:1px solid rgba(255,92,162,.14)}
+/* Clues */
+.clues{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:14px; color:var(--muted); font-size:14px}
+.clues h3{color:var(--fg); font-size:14px; margin:0 0 6px}
+.clues ol{margin:0; padding-left:20px}
+.footer{
+  display:flex; flex-wrap:wrap; gap:10px; justify-content:space-between; align-items:center;
+  padding:12px 16px 14px; font-size:12px; color:var(--muted); border-top:1px solid rgba(255,92,162,.14)
+}
+
+/* Mobile tweaks */
+@media (max-width:520px){
+  .clues{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
@@ -42,14 +88,14 @@ html,body{height:100%} body{margin:0;background:var(--bg);color:var(--fg);font-f
 <div id="intro" class="shell">
   <div class="card">
     <div class="bar"><span class="title">// for you</span></div>
-    <figure style="margin:0">
-      <img id="hero" alt="us" src="her.png" style="display:block;width:100%;height:auto;object-fit:cover;background:#111"/>
-      <figcaption id="heroCaption" style="padding:14px 16px;font-size:18px;text-align:center">I miss you</figcaption>
+    <figure>
+      <img id="hero" alt="us" src="her.png"/>
+      <figcaption id="heroCaption">I miss you</figcaption>
       <!-- To change the caption, edit the text above OR in JS:
            document.getElementById('heroCaption').textContent = 'YOUR CAPTION' -->
     </figure>
     <div class="content" style="display:flex;justify-content:center;border-top:1px solid rgba(255,92,162,.14)">
-      <button class="btn" id="startGame">click to start the game</button>
+      <button class="btn primary" id="startGame" style="font-size:18px;padding:16px 26px">click to start the game</button>
     </div>
   </div>
 </div>
@@ -64,27 +110,14 @@ html,body{height:100%} body{margin:0;background:var(--bg);color:var(--fg);font-f
       <div class="clues">
         <div>
           <h3>Across</h3>
-          <ol>
-            <li><strong>1</strong>. where was our first date (9)</li>
-            <li><strong>5</strong>. what month is my birthday (3)</li>
-            <li><strong>7</strong>. what do I like smacking (7)</li>
-            <li><strong>8</strong>. what’s Adri’s favourite ice cream flavour (13)</li>
-            <li><strong>10</strong>. what’s my favourite colour? (3)</li>
-            <li><strong>6</strong>. first name of my favourite DJ (7)</li>
-          </ol>
+          <ol id="acrossList"></ol>
         </div>
         <div>
           <h3>Down</h3>
-          <ol>
-            <li><strong>2</strong>. what is my dream car (8)</li>
-            <li><strong>3</strong>. what car do I drive (3)</li>
-            <li><strong>4</strong>. what is my favourite food (5)</li>
-            <li><strong>9</strong>. Adri’s favourite colour (4)</li>
-          </ol>
+          <ol id="downList"></ol>
         </div>
       </div>
     </div>
-
     <div class="footer">
       <span>fill the grid, then press check ✅</span>
       <div style="display:flex;gap:10px">
@@ -96,74 +129,129 @@ html,body{height:100%} body{margin:0;background:var(--bg);color:var(--fg);font-f
 </div>
 
 <script>
-// ======= CONFIG =======
-const BOUQUET_URL = "https://howiewowielin.github.io/Silly_Little_Repo/flowers_for_her"; // <- set your bouquet URL
+// ========= CONFIG =========
+const BOUQUET_URL = "https://howiewowielin.github.io/Silly_Little_Repo/flowers_for_her"; // <-- set your bouquet URL
 
-// Crossword layout (15×15). Words placed to make a true grid with overlaps.
+// Define the words with their clues (no numbers; we compute numbering automatically)
 const WORDS = [
-  // Across
-  {num:8,  answer:"MINTCHOCOLATE", row:0, col:0, dir:"across"},
-  {num:5,  answer:"NOV",           row:1, col:3, dir:"across"},
-  {num:7,  answer:"YOURASS",       row:2, col:1, dir:"across"},
-  {num:1,  answer:"UNIVERSAL",     row:3, col:1, dir:"across"},
-  {num:10, answer:"RED",           row:4, col:3, dir:"across"},
-  {num:6,  answer:"WILLIAM",       row:6, col:8, dir:"across"},
-  // Down
-  {num:2,  answer:"CORVETTE",      row:0, col:4, dir:"down"},
-  {num:3,  answer:"BMW",           row:4, col:6, dir:"down"},
-  {num:4,  answer:"SUSHI",         row:3, col:7, dir:"down"},
-  {num:9,  answer:"BLUE",          row:2, col:9, dir:"down"},
+  // Across placements (row, col are 0-indexed start positions)
+  {dir:"across", answer:"MINTCHOCOLATE", row:0, col:0, clue:"what’s Adri’s favourite ice cream flavour"},
+  {dir:"across", answer:"NOV",           row:1, col:3, clue:"what month is my birthday"},
+  {dir:"across", answer:"YOURASS",       row:2, col:1, clue:"what do I like smacking"},
+  {dir:"across", answer:"UNIVERSAL",     row:3, col:1, clue:"where was our first date"},
+  {dir:"across", answer:"RED",           row:4, col:3, clue:"what’s my favourite colour?"},
+  {dir:"across", answer:"WILLIAM",       row:6, col:8, clue:"first name of my favourite DJ"},
+  // Down placements
+  {dir:"down",   answer:"CORVETTE",      row:0, col:4, clue:"what is my dream car"},
+  {dir:"down",   answer:"BMW",           row:4, col:6, clue:"what car do I drive"},
+  {dir:"down",   answer:"SUSHI",         row:3, col:7, clue:"what is my favourite food"},
+  {dir:"down",   answer:"BLUE",          row:2, col:9, clue:"Adri’s favourite colour"},
 ];
 
 const ROWS = 15, COLS = 15;
 
-// ======= BUILD GRID =======
+// ========= BUILD GRID =========
 const gridEl = document.getElementById('grid');
 const grid = Array.from({length:ROWS},()=>Array.from({length:COLS},()=>({block:true, num:null, sol:null})));
 
+// Place letters from all words
 for(const w of WORDS){
   const A = w.answer.toUpperCase();
   for(let i=0;i<A.length;i++){
     const r = w.row + (w.dir==='down'? i : 0);
     const c = w.col + (w.dir==='across'? i : 0);
-    const cell = grid[r][c];
-    cell.block = false;
-    cell.sol = cell.sol ?? A[i];
-    // mark start number on the first cell of the word
-    if(i===0) cell.num = (cell.num ?? w.num);
+    grid[r][c].block = false;
+    grid[r][c].sol = grid[r][c].sol ?? A[i];
   }
 }
 
-// render
-const inputs = [];
+// Compute numbering automatically (scan left-to-right, top-to-bottom)
+let nextNum = 1;
+const indexByStart = new Map(); // key "r,c,dir" -> word
+for(const w of WORDS){
+  indexByStart.set(`${w.row},${w.col},${w.dir}`, w);
+}
+
 for(let r=0;r<ROWS;r++){
   for(let c=0;c<COLS;c++){
-    const cell = grid[r][c];
-    if(cell.block){
-      const d = document.createElement('div'); d.className='cell block';
-      gridEl.appendChild(d);
-    }else{
-      const d = document.createElement('div'); d.className='cell';
-      if(cell.num){ const s=document.createElement('span'); s.className='num'; s.textContent=cell.num; d.appendChild(s); }
-      const i = document.createElement('input');
-      i.setAttribute('maxlength','1');
-      i.dataset.r = r; i.dataset.c = c; i.dataset.sol = cell.sol;
-      i.addEventListener('input', (e)=>{ e.target.value = e.target.value.toUpperCase().replace(/[^A-Z]/g,''); });
-      d.appendChild(i); gridEl.appendChild(d); inputs.push(i);
+    if(grid[r][c].block) continue;
+
+    // start of across?
+    const startsAcross = (c===0 || grid[r][c-1].block) && (c+1<COLS && !grid[r][c+1].block);
+    if(startsAcross){
+      grid[r][c].num = grid[r][c].num ?? nextNum;
+      const key = `${r},${c},across`;
+      if(indexByStart.has(key)) indexByStart.get(key).num = grid[r][c].num;
+      nextNum++;
+    }
+
+    // start of down?
+    const startsDown = (r===0 || grid[r-1][c].block) && (r+1<ROWS && !grid[r+1][c].block);
+    if(startsDown){
+      // If same cell already got an across number, reuse it; else assign new
+      if(grid[r][c].num == null){ grid[r][c].num = nextNum; nextNum++; }
+      const key = `${r},${c},down`;
+      if(indexByStart.has(key)) indexByStart.get(key).num = grid[r][c].num;
     }
   }
 }
 
-// ======= CHECK / CLEAR =======
+// Render grid
+const inputs = [];
+for(let r=0;r<ROWS;r++){
+  for(let c=0;c<COLS;c++){
+    const cell = grid[r][c];
+    const d = document.createElement('div');
+    if(cell.block){
+      d.className='cell block';
+      gridEl.appendChild(d);
+      continue;
+    }
+    d.className='cell';
+    if(cell.num){ const s=document.createElement('span'); s.className='num'; s.textContent=cell.num; d.appendChild(s); }
+    const i = document.createElement('input');
+    i.setAttribute('maxlength','1');
+    i.setAttribute('inputmode','text');    // better iOS keyboard
+    i.setAttribute('autocomplete','off');
+    i.setAttribute('autocapitalize','characters');
+    i.dataset.r = r; i.dataset.c = c; i.dataset.sol = cell.sol;
+    i.addEventListener('input', (e)=>{
+      e.target.value = e.target.value.toUpperCase().replace(/[^A-Z]/g,'');
+      // auto-advance to next cell in the same word if typing
+      if(e.target.value.length===1){
+        const next = e.target.nextElementSibling; // not reliable in grid; skip auto-nav here to avoid confusion
+      }
+    });
+    d.appendChild(i);
+    gridEl.appendChild(d);
+    inputs.push(i);
+  }
+}
+
+// Render clues with computed numbers (no user numbering)
+function byDir(dir){ return WORDS.filter(w=>w.dir===dir).sort((a,b)=>a.num-b.num); }
+function fillClueList(listEl, words){
+  listEl.innerHTML = '';
+  for(const w of words){
+    const li = document.createElement('li');
+    const len = w.answer.length;
+    li.innerHTML = `<strong>${w.num}</strong>. ${w.clue} (${len})`;
+    listEl.appendChild(li);
+  }
+}
+fillClueList(document.getElementById('acrossList'), byDir('across'));
+fillClueList(document.getElementById('downList'), byDir('down'));
+
+// Check / Clear
 function norm(x){return (x||'').toUpperCase();}
-function isFilledCorrect(i){ return norm(i.value) === norm(i.dataset.sol); }
+function isCorrect(i){ return norm(i.value) === norm(i.dataset.sol); }
 
 document.getElementById('check').addEventListener('click', ()=>{
   let ok = true, allFilled = true;
   inputs.forEach(i=>{
     const filled = !!i.value;
     if(!filled) allFilled = false;
-    const good = filled && isFilledCorrect(i);
+    const good = filled && isCorrect(i);
     i.classList.toggle('ok', good);
     i.classList.toggle('bad', filled && !good);
     if(!good) ok = false;
@@ -171,8 +259,8 @@ document.getElementById('check').addEventListener('click', ()=>{
   if(ok && allFilled){
     window.location.href = BOUQUET_URL;
   }else{
-    // focus first empty/incorrect cell
-    (inputs.find(i=>!i.value) || inputs.find(i=>!isFilledCorrect(i)) || inputs[0]).focus();
+    // focus first empty or incorrect cell to help on phones
+    (inputs.find(i=>!i.value) || inputs.find(i=>!isCorrect(i)) || inputs[0]).focus();
   }
 });
 
@@ -181,7 +269,7 @@ document.getElementById('clear').addEventListener('click', ()=>{
   inputs[0]?.focus();
 });
 
-// ======= intro → game =======
+// Intro → game
 document.getElementById('startGame').addEventListener('click', ()=>{
   document.getElementById('intro').style.display='none';
   document.getElementById('game').style.display='grid';
