@@ -6,24 +6,30 @@
 <title>for you 💖</title>
 <style>
 :root{
-  --cell: clamp(34px, 8.5vw, 46px);
+  /* 15 columns: shrink cells on narrow screens so grid never cuts off */
+  --cell: min(46px, calc((100vw - 40px) / 15));
   --bg:#0b0f10; --fg:#d9f2e6; --accent:#ff5ca2; --muted:#7aa48a;
 }
 html,body{height:100%}
-body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif
+}
 button, input{font-family:inherit}
 
 .btn{
-  appearance:none; border:1px solid rgba(255,92,162,.35); background:rgba(255,92,162,.10);
-  color:var(--fg); padding:14px 20px; font-size:16px; border-radius:999px; cursor:pointer;
+  appearance:none; border:1px solid rgba(255,92,162,.35);
+  background:rgba(255,92,162,.10); color:var(--fg);
+  padding:14px 20px; font-size:16px; border-radius:999px; cursor:pointer;
   transition:.2s transform,.2s opacity; backdrop-filter:blur(6px); touch-action:manipulation
 }
 .btn:hover{transform:translateY(-1px)}
 .btn.primary{background:rgba(255,92,162,.18); font-weight:600}
 
-.shell{min-height:100vh; display:grid; place-items:center; padding:16px}
+.shell{min-height:100dvh; display:grid; place-items:center; padding:16px}
 .card{
-  width:min(960px,95vw); background:rgba(12,16,17,.82);
+  width:min(960px,95vw);
+  background:rgba(12,16,17,.82);
   border:1px solid rgba(255,92,162,.25); border-radius:18px;
   box-shadow:0 20px 80px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,92,162,.12);
   overflow:hidden
@@ -36,7 +42,7 @@ button, input{font-family:inherit}
 .title{margin-left:6px; font-size:12px; letter-spacing:.04em; color:var(--muted)}
 .content{padding:14px}
 
-/* Intro photo – show full image, smaller, no crop */
+/* Intro photo */
 figure{margin:0}
 #hero{
   display:block; width:100%;
@@ -45,15 +51,19 @@ figure{margin:0}
 }
 #heroCaption{padding:12px 14px; font-size:18px; text-align:center}
 
-/* Grid */
+/* Grid wrapper ensures no horizontal cut-off */
+.gridWrap{
+  overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:8px;
+}
 .grid{
   display:grid; grid-template-columns:repeat(15, var(--cell));
   grid-auto-rows:var(--cell); gap:2px; background:#0003; padding:6px;
   border-radius:12px; margin:auto; touch-action:manipulation
 }
 .cell{
-  position:relative; width:var(--cell); height:var(--cell); background:#101618;
-  border:1px solid #ffffff12; border-radius:6px; display:flex; align-items:center; justify-content:center
+  position:relative; width:var(--cell); height:var(--cell);
+  background:#101618; border:1px solid #ffffff12; border-radius:6px;
+  display:flex; align-items:center; justify-content:center
 }
 .block{background:#0a0f11; box-shadow:inset 0 0 0 1px #000}
 .num{position:absolute; top:3px; left:6px; font-size:10px; color:#a7c4b4; user-select:none}
@@ -66,14 +76,14 @@ figure{margin:0}
 .ok{box-shadow:inset 0 0 0 2px #2ecc71aa} .bad{box-shadow:inset 0 0 0 2px #ff5ca2aa}
 
 /* Clues */
-.clues{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:14px; color:var(--muted); font-size:14px}
+.clues{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:14px;
+  color:var(--muted); font-size:14px}
 .clues h3{color:var(--fg); font-size:14px; margin:0 0 6px}
 .clues ol{margin:0; padding-left:20px}
 .footer{
   display:flex; flex-wrap:wrap; gap:10px; justify-content:space-between; align-items:center;
   padding:12px 16px 14px; font-size:12px; color:var(--muted); border-top:1px solid rgba(255,92,162,.14)
 }
-
 @media (max-width:520px){ .clues{grid-template-columns:1fr} }
 </style>
 </head>
@@ -85,12 +95,14 @@ figure{margin:0}
     <div class="bar"><span class="title">// for you</span></div>
     <figure>
       <img id="hero" alt="us" src="her.png"/>
-      <figcaption id="heroCaption">miss u lots baobei</figcaption>
-      <!-- To change the caption, edit the text above OR in JS:
+      <figcaption id="heroCaption">I miss you</figcaption>
+      <!-- To change the caption, edit the text above OR:
            document.getElementById('heroCaption').textContent = 'YOUR CAPTION' -->
     </figure>
     <div class="content" style="display:flex;justify-content:center;border-top:1px solid rgba(255,92,162,.14)">
-      <button class="btn primary" id="startGame" style="font-size:18px;padding:16px 26px">click to start the game</button>
+      <button class="btn primary" id="startGame" style="font-size:18px;padding:16px 26px">
+        click to start the game
+      </button>
     </div>
   </div>
 </div>
@@ -98,9 +110,11 @@ figure{margin:0}
 <!-- CROSSWORD -->
 <div id="game" class="shell" style="display:none">
   <div class="card">
-    <div class="bar"><span class="title">// mini crossword — solve to unlock your bouquet</span></div>
+    <div class="bar"><span class="title">// mini crossword — solve to unlock your surprise</span></div>
     <div class="content">
-      <div id="grid" class="grid" aria-label="crossword grid"></div>
+      <div class="gridWrap">
+        <div id="grid" class="grid" aria-label="crossword grid"></div>
+      </div>
 
       <div class="clues">
         <div><h3>Across</h3><ol id="acrossList"></ol></div>
@@ -118,7 +132,7 @@ figure{margin:0}
 </div>
 
 <script>
-const BOUQUET_URL = "https://howiewowielin.github.io/Silly_Little_Repo/flowers_for_her";
+const BOUQUET_URL = "https://howiewowielin.github.io/Silly_Little_Repo/surprise";
 
 const WORDS = [
   {dir:"across", answer:"MINTCHOCOLATE", row:0, col:0, clue:"what’s Adri’s favourite ice cream flavour"},
@@ -211,40 +225,30 @@ document.getElementById('startGame').addEventListener('click', ()=>{
   document.getElementById('game').style.display='grid';
   inputs[0]?.focus();
 });
-// ===== DEV SHORTCUTS =====
 
-// Shift+Q (desktop/laptop)
+// ----- Developer shortcuts -----
+// Shift+Q (desktop)
 document.addEventListener('keydown', function(e) {
   if (e.key && e.key.toLowerCase() === 'q' && e.shiftKey) {
-    window.location.href = BOUQUET_URL; // skip crossword
+    window.location.href = BOUQUET_URL;
   }
 });
-
-// 'q' x3 within 1500ms (phone-friendly)
+// 'q' x3 quickly (phone)
 (function(){
   let queue = [];
   const WINDOW_MS = 1500;
-
   function maybeSkip() {
     const now = Date.now();
-    // keep only recent keypresses
     queue = queue.filter(t => now - t < WINDOW_MS);
-    if (queue.length >= 3) {
-      window.location.href = BOUQUET_URL;
-    }
+    if (queue.length >= 3) window.location.href = BOUQUET_URL;
   }
-
-  // Works even when typing inside input boxes
   document.addEventListener('keydown', function(e){
-    if (!e.key) return;
-    if (e.key.toLowerCase() === 'q') {
+    if (e.key && e.key.toLowerCase() === 'q') {
       queue.push(Date.now());
       maybeSkip();
     }
   });
 })();
-
-
 </script>
 </body>
 </html>
