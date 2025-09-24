@@ -1,213 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>virtual flowers for you 🌸</title>
-  <style>
-    :root{
-      --bg:#0b0f10;          /* deep midnight */
-      --card:#0f1416e6;      /* glassy panel */
-      --ink:#e8f7f0;         /* soft text */
-      --accent:#ff7db6;      /* pink */
-      --accent2:#7dd3ff;     /* sky */
-      --leaf:#7fe0a6;        /* mint */
-      --muted:#9bb5a8;       /* gray-mint */
-      --gold:#ffd26a;        /* ribbon */
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0; background:radial-gradient(1000px 600px at 50% 120%, #132025 20%, var(--bg) 70%);
-      color:var(--ink); font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
-      overflow:hidden;
-    }
-
-    /* Background stars */
-    .stars{position:fixed; inset:0; z-index:0; pointer-events:none}
-    .stars span{position:absolute; width:2px; height:2px; background:#fff2; border-radius:50%; animation:twinkle 3s infinite}
-    @keyframes twinkle{ 50%{opacity:.35; transform:scale(.8)} }
-
-    .wrap{position:relative; z-index:1; height:100%; display:grid; place-items:center; padding:24px}
-    .card{
-      width:min(920px,94vw); background:var(--card); border:1px solid #ffffff1a; border-radius:20px;
-      box-shadow:0 25px 120px rgba(0,0,0,.55), inset 0 0 0 1px #ffffff0f; overflow:hidden;
-      backdrop-filter: blur(8px);
-    }
-    .bar{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 14px; border-bottom:1px solid #ffffff21; background:linear-gradient(180deg,#ffffff0e,#0000)}
-    .title{font-size:14px; letter-spacing:.04em; color:var(--muted)}
-
-    .stage{position:relative; height:min(520px, 64vh); padding:14px; display:grid; place-items:center;}
-    #garden{width:100%; height:100%; display:block;}
-
-    .controls{display:flex; flex-wrap:wrap; gap:10px; padding:12px 14px; border-top:1px solid #ffffff21; align-items:center}
-    .btn{appearance:none; border:1px solid #ffffff33; background:#ffffff12; color:var(--ink); padding:8px 12px; font-size:12px; border-radius:999px; cursor:pointer; transition:.18s transform, .18s opacity; backdrop-filter: blur(6px)}
-    .btn:hover{transform:translateY(-1px)}
-    .hint{margin-left:auto; color:var(--muted); font-size:12px}
-    .note-input{flex:1 1 220px; min-width:200px; max-width:360px; padding:8px 10px; border-radius:999px; border:1px solid #ffffff33; background:#ffffff10; color:var(--ink)}
-
-    .note{position:absolute; inset:auto 0 14px 0; width:100%; display:grid; place-items:center; pointer-events:none}
-    .bubble{max-width:86%; background:#00000066; color:#fff; padding:10px 14px; border-radius:14px; font-size:14px; border:1px solid #ffffff18}
-
-    /* Vase */
-    .vase{position:absolute; bottom:0; left:50%; transform:translateX(-50%); width:200px; height:120px; filter:drop-shadow(0 6px 30px rgba(0,0,0,.6))}
-    .vase svg{width:100%; height:100%; opacity:.92}
-
-    /* Typewriter line */
-    .tw{font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; font-size:14px; padding:4px 12px 0; color:var(--muted)}
-    .cursor{display:inline-block; width:9px; height:1.1em; background:var(--accent); margin-left:6px; animation:blink 1s steps(1,end) infinite}
-    @keyframes blink{50%{opacity:0}}
-
-    /* Gift overlay */
-    .overlay{position:fixed; inset:0; display:none; place-items:center; background:radial-gradient(1200px 800px at 50% 110%, #0b1214aa, #0b0f10f2); z-index:5}
-    .overlay.show{display:grid}
-    .gift{
-      position:relative; width:min(520px, 92vw); border-radius:20px; border:1px solid #ffffff1a; background:#0f1416e6; box-shadow:0 30px 120px rgba(0,0,0,.65), inset 0 0 0 1px #ffffff0f; padding:18px; text-align:center
-    }
-    .gift-title{font-size:16px; color:#fff; margin:6px 0 12px}
-    .gift-box{position:relative; height:280px; display:grid; place-items:center}
-    .lid{position:absolute; top:64px; left:50%; transform:translateX(-50%); width:280px; height:54px; background:linear-gradient(180deg, #ff9ccc, #ff7db6); border-radius:12px; box-shadow:0 6px 16px rgba(0,0,0,.35)}
-    .ribbon{position:absolute; top:0; left:50%; transform:translate(-50%,-12px); width:40px; height:40px; background:var(--gold); border-radius:50%; box-shadow:0 6px 16px rgba(0,0,0,.3)}
-    .box{position:absolute; top:110px; left:50%; transform:translateX(-50%); width:300px; height:140px; background:linear-gradient(180deg, #ff7db6, #ff5aa8); border-radius:12px; box-shadow:0 12px 30px rgba(0,0,0,.45)}
-    .box::after{content:""; position:absolute; inset:0; border:2px solid #ffffff1a; border-radius:12px}
-    .strap{position:absolute; top:0; left:50%; transform:translateX(-50%); width:26px; height:100%; background:var(--gold)}
-    .bouquet{position:absolute; bottom:120px; left:50%; transform:translateX(-50%) translateY(40px); opacity:0; transition:transform .8s ease, opacity .8s ease}
-    .bouquet.show{transform:translateX(-50%) translateY(-30px); opacity:1}
-    .card{margin-top:8px; padding:10px 12px; background:#00000055; border:1px solid #ffffff1f; border-radius:12px; color:#fff; font-size:14px}
-
-    .gift-actions{display:flex; gap:10px; justify-content:center; margin-top:16px}
-
-    /* Confetti */
-    .confetti{position:fixed; inset:0; pointer-events:none; z-index:6}
-    .hidden{display:none}
-  </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>a bouquet for you 🌹</title>
+<style>
+:root{
+  --bg:#0b0f10; --fg:#d9f2e6; --accent:#ff5ca2; --muted:#7aa48a; --gold:#ffd26a;
+}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);
+          font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;overflow:hidden;}
+/* starry background */
+.stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+.stars span{position:absolute;width:2px;height:2px;background:#fff2;
+            border-radius:50%;animation:twinkle 3s infinite}
+@keyframes twinkle{50%{opacity:.35;transform:scale(.8)}}
+.wrap{position:relative;z-index:1;height:100%;display:grid;place-items:center;padding:24px}
+.note{position:absolute;inset:auto 0 12px 0;width:100%;display:grid;place-items:center}
+.bubble{max-width:90%;background:#00000066;color:#fff;padding:12px 14px;border-radius:14px;
+        font-size:16px;border:1px solid #ffffff18;text-align:center}
+</style>
 </head>
 <body>
-  <!-- soft starry background -->
-  <div class="stars" id="stars"></div>
 
-  <div class="wrap">
-    <div class="card" role="region" aria-label="virtual flowers">
-      <div class="bar">
-        <div class="title">// long​-distance bouquet — for you</div>
-        <div class="tw" id="tw"></div>
-      </div>
+<div class="stars" id="stars"></div>
 
-      <div class="stage">
-        <svg id="garden" viewBox="0 0 900 540" preserveAspectRatio="xMidYMid slice" aria-label="flower garden"></svg>
-        <div class="note"><div class="bubble" id="bubble">plant flowers, add a sweet note, then wrap & share your gift 💝</div></div>
-        <div class="vase" aria-hidden="true">
-          <svg viewBox="0 0 200 120">
-            <defs>
-              <linearGradient id="glass" x1="0" x2="1" y1="0" y2="1">
-                <stop offset="0%" stop-color="#b0eaff" stop-opacity="0.25"/>
-                <stop offset="100%" stop-color="#6ad6ff" stop-opacity="0.12"/>
-              </linearGradient>
-            </defs>
-            <path d="M50 10 h100 l-10 60 q-40 35 -80 0 z" fill="url(#glass)" stroke="#6ad6ff88" stroke-width="2"/>
-            <ellipse cx="100" cy="100" rx="68" ry="16" fill="#6ad6ff22"/>
-          </svg>
-        </div>
-      </div>
+<div class="wrap">
+  <svg id="garden" viewBox="0 0 900 580" preserveAspectRatio="xMidYMid slice"
+       aria-label="rose garden" style="width:100%;height:100%;"></svg>
 
-      <div class="controls">
-        <input id="note" class="note-input" maxlength="120" placeholder="Write a short note… e.g. ‘Thinking of you across the miles’" />
-        <button class="btn" id="random">plant flower</button>
-        <button class="btn" id="bouquet">make bouquet</button>
-        <button class="btn" id="wrap">wrap as gift</button>
-        <button class="btn" id="openGift" disabled>open gift</button>
-        <button class="btn" id="share">share gift link</button>
-        <button class="btn" id="sound">sound: off</button>
-        <span class="hint">tip: 8–12 flowers looks lush 🌷</span>
-      </div>
-    </div>
+  <div class="note">
+    <div class="bubble" id="bubble">💌 Thinking of you</div>
+    <!-- To change the note text, edit the text above OR in JS:
+         document.getElementById('bubble').textContent = '💌 Your message'; -->
   </div>
-
-  <!-- Gift overlay -->
-  <div class="overlay" id="overlay">
-    <div class="gift">
-      <div class="gift-title">A little surprise for you 💝</div>
-      <div class="gift-box">
-        <div class="lid" id="lid"></div>
-        <div class="box"><div class="strap"></div></div>
-        <svg class="bouquet" id="bouquetSvg" viewBox="0 0 220 220" width="220" height="220" aria-label="bouquet">
-          <defs>
-            <radialGradient id="glow" r="1">
-              <stop offset="0%" stop-color="#fff" stop-opacity="0.8"/>
-              <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
-            </radialGradient>
-          </defs>
-          <circle cx="110" cy="110" r="90" fill="url(#glow)" opacity=".15"/>
-          <!-- simple stylized bouquet -->
-          <g transform="translate(110,130)">
-            <g id="stems">
-              <path d="M0 0 q -6 28 -12 56" stroke="#69d7a0" stroke-width="3" fill="none" stroke-linecap="round"/>
-              <path d="M0 0 q 6 28 12 56" stroke="#69d7a0" stroke-width="3" fill="none" stroke-linecap="round"/>
-              <path d="M0 0 v 60" stroke="#69d7a0" stroke-width="3" fill="none" stroke-linecap="round"/>
-            </g>
-            <g id="blooms">
-              <circle cx="-34" cy="-28" r="15" fill="#ff9ccd"/>
-              <circle cx="34" cy="-26" r="16" fill="#ffa6d6"/>
-              <circle cx="0" cy="-44" r="18" fill="#ff7db6"/>
-              <circle cx="-8" cy="-6" r="12" fill="#ffd8f0"/>
-              <circle cx="22" cy="-2" r="10" fill="#ffd26a"/>
-            </g>
-          </g>
-        </svg>
-      </div>
-      <div class="card" id="giftMsg">💌</div>
-      <div class="gift-actions">
-        <button class="btn" id="reveal">open gift</button>
-        <button class="btn" id="closeOverlay">close</button>
-      </div>
-    </div>
-  </div>
-
-  <canvas class="confetti hidden" id="confetti"></canvas>
+</div>
 
 <script>
-// --------- tiny starfield ---------
+// --- stars ---
 (function(){
-  const p = new URLSearchParams(location.search);
-  const n = p.get('note');
-  if(n){ document.getElementById('note').value = n; giftMsg.textContent = '💌 ' + n; document.getElementById('openGift').disabled=false; }
-  // Auto-seed pink roses so it feels like receiving flowers
-  unlock();
-  for(let k=0;k<12;k++) setTimeout(()=> makeFlower(rand(140,W-140), rand(H-120,H-40)), 60*k);
-  // Gather into bouquet, show gift overlay, and reveal automatically
-  setTimeout(()=>{
-    gatherBouquet(()=>{
-      wrapGift();
-      setTimeout(()=>{ document.getElementById('reveal').click(); }, 800);
-    });
-  }, 1200);
+  const el=document.getElementById('stars');
+  for(let i=0;i<120;i++){
+    const s=document.createElement('span');
+    s.style.left=Math.random()*100+'%';
+    s.style.top=Math.random()*100+'%';
+    s.style.width=s.style.height=(Math.random()*2+1)+'px';
+    s.style.animationDelay=(Math.random()*3)+'s';
+    el.appendChild(s);
+  }
 })();
 
-// --------- Confetti (tiny canvas) ---------
-const conf = document.getElementById('confetti');
-const cx = conf.getContext('2d');
-let cw,ch,parts=[];
-function confResize(){ cw=conf.width=innerWidth; ch=conf.height=innerHeight; }
-addEventListener('resize', confResize); confResize();
-function fireConfetti(){
-  conf.classList.remove('hidden');
-  parts = Array.from({length:140},()=>({
-    x:Math.random()*cw, y:-20-Math.random()*80, r:5+Math.random()*6,
-    vx:-1+Math.random()*2, vy:2+Math.random()*2.5, rot:Math.random()*6.28,
-    color: `hsl(${Math.random()*360} 90% 60%)`
-  }));
-  let t=0; (function loop(){
-    cx.clearRect(0,0,cw,ch);
-    parts.forEach(p=>{
-      p.x+=p.vx; p.y+=p.vy; p.vy+=0.02; p.rot+=0.05;
-      cx.save(); cx.translate(p.x,p.y); cx.rotate(p.rot);
-      cx.fillStyle=p.color; cx.fillRect(-p.r/2,-p.r/2,p.r,p.r);
-      cx.restore();
-    });
-    t++; if(t<220) requestAnimationFrame(loop); else conf.classList.add('hidden');
+// --- rose bouquet ---
+const svg=document.getElementById('garden');
+const W=900,H=580;
+function rand(a,b){return a+Math.random()*(b-a);}
+function gaussian(){let u=0,v=0;while(u===0)u=Math.random();while(v===0)v=Math.random();
+  return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+function makeRose(x,y){
+  const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+  g.setAttribute('transform',`translate(${x},${y})`);
+  g.style.filter='drop-shadow(0 2px 6px rgba(0,0,0,.35))';
+
+  const stem=document.createElementNS(svg.namespaceURI,'path');
+  const h=rand(120,165),sway=rand(-10,10);
+  stem.setAttribute('d',`M0 0 q ${sway/2} ${-h/2} ${sway} ${-h}`);
+  stem.setAttribute('fill','none');stem.setAttribute('stroke','#68d39a');
+  stem.setAttribute('stroke-width','3');stem.setAttribute('stroke-linecap','round');
+
+  const leaf=document.createElementNS(svg.namespaceURI,'path');
+  leaf.setAttribute('d','M0 -40 q 24 -12 46 0 q -24 12 -46 0 z');
+  leaf.setAttribute('fill','#78e9aecc');
+  leaf.setAttribute('transform',`rotate(${rand(-15,15)})`);
+
+  const petals=document.createElementNS(svg.namespaceURI,'g');
+  const radius=rand(18,24),hue=335;
+  const layers=Math.floor(rand(3,5));
+  for(let L=0;L<layers;L++){
+    const n=Math.floor(rand(10,16));
+    const r=radius*(0.55+(L/layers)*0.65);
+    for(let i=0;i<n;i++){
+      const petal=document.createElementNS(svg.namespaceURI,'path');
+      const ang=i*(2*Math.PI/n)+rand(-0.05,0.05);
+      const px=r*Math.cos(ang),py=r*Math.sin(ang);
+      petal.setAttribute('d','M0 0 C 10 -14, 22 -10, 24 0 C 22 12, 10 10, 0 0 Z');
+      const light=55+(L*8)+rand(-4,4);
+      petal.setAttribute('fill',`hsl(${hue+rand(-3,3)} 85% ${light}%)`);
+      petal.setAttribute('transform',`translate(${px},${py- h}) rotate(${ang*57.3 + rand(-6,6)}) scale(${rand(0.85,1.05)})`);
+      petals.appendChild(petal);
+    }
+  }
+  const swirl=document.createElementNS(svg.namespaceURI,'path');
+  swirl.setAttribute('d','M0 0 c 8 -6 16 -2 14 6 c -2 8 -12 8 -16 2 c -5 -6 -1 -12 5 -14');
+  swirl.setAttribute('transform',`translate(0,${-h})`);
+  swirl.setAttribute('stroke',`hsl(${hue} 60% 45%)`);
+  swirl.setAttribute('fill','none'); swirl.setAttribute('stroke-width','2');
+  petals.appendChild(swirl);
+
+  g.append(stem,leaf,petals);
+  svg.appendChild(g);
+
+  let t=0,baseX=x,amp=rand(1,3),speed=rand(0.0015,0.0035);
+  (function animate(){t+=1;const dx=Math.sin(t*speed)*amp;
+    g.setAttribute('transform',`translate(${baseX+dx},${y})`);
+    requestAnimationFrame(animate);
   })();
 }
+function seedRosesCluster(count=18){
+  const cx=W/2, cy=H-60;
+  for(let k=0;k<count;k++){
+    const r=Math.abs(gaussian())*80;
+    const ang=Math.random()*Math.PI;
+    const x=cx + r*Math.cos(ang);
+    const y=cy - Math.abs(gaussian())*40 - 20;
+    makeRose(x,y);
+  }
+}
+seedRosesCluster(20);
 
+// --- Optional: allow URL param ?note=YourMessage
+const params=new URLSearchParams(location.search);
+const n=params.get('note');
+if(n) document.getElementById('bubble').textContent='💌 '+n;
 </script>
 </body>
 </html>
