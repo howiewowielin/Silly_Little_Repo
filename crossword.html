@@ -5,29 +5,35 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>for you 💖</title>
 <style>
-:root{--bg:#0b0f10;--fg:#d9f2e6;--accent:#ff5ca2;--muted:#7aa48a;}
-html,body{height:100%}
-body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+:root{--bg:#0b0f10;--fg:#d9f2e6;--accent:#ff5ca2;--muted:#7aa48a;--cell:44px;}
+html,body{height:100%} body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
 .btn{appearance:none;border:1px solid rgba(255,92,162,.35);background:rgba(255,92,162,.08);color:var(--fg);
-     padding:10px 14px;font-size:14px;border-radius:999px;cursor:pointer;
-     transition:.2s transform,.2s opacity;backdrop-filter:blur(6px)}
+     padding:10px 14px;font-size:14px;border-radius:999px;cursor:pointer;transition:.2s transform,.2s opacity}
 .btn:hover{transform:translateY(-1px)}
 .shell{min-height:100vh;display:grid;place-items:center;padding:24px}
-.card{width:min(920px,94vw);background:rgba(12,16,17,.82);
-      border:1px solid rgba(255,92,162,.25);border-radius:18px;
-      box-shadow:0 20px 80px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,92,162,.12);
-      overflow:hidden}
-.bar{display:flex;align-items:center;gap:10px;padding:12px 14px;
-     background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+.card{width:min(960px,95vw);background:rgba(12,16,17,.82);border:1px solid rgba(255,92,162,.25);
+      border-radius:18px;box-shadow:0 20px 80px rgba(0,0,0,.45),inset 0 0 0 1px rgba(255,92,162,.12);overflow:hidden}
+.bar{display:flex;align-items:center;gap:10px;padding:12px 14px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
      border-bottom:1px solid rgba(255,92,162,.18)}
 .title{margin-left:6px;font-size:12px;letter-spacing:.04em;color:var(--muted)}
 .content{padding:16px}
-.clue{font-size:14px;color:var(--muted)}
-.cw{width:100%;padding:10px 12px;border-radius:12px;
-    border:1px solid rgba(255,92,162,.25);background:rgba(255,255,255,.03);color:var(--fg)}
-.footer{display:flex;justify-content:space-between;align-items:center;
-        padding:12px 16px 14px;font-size:12px;color:var(--muted);
-        border-top:1px solid rgba(255,92,162,.14)}
+
+/* crossword grid */
+.grid{display:grid;grid-template-columns:repeat(15,var(--cell));grid-auto-rows:var(--cell);gap:2px;background:#0003;padding:6px;border-radius:12px;margin:auto}
+.cell{position:relative;width:var(--cell);height:var(--cell);background:#101618;border:1px solid #ffffff12;border-radius:6px;display:flex;align-items:center;justify-content:center}
+.block{background:#0a0f11;box-shadow:inset 0 0 0 1px #000}
+.num{position:absolute;top:3px;left:6px;font-size:10px;color:#a7c4b4}
+.cell input{width:100%;height:100%;background:transparent;border:0;outline:none;text-align:center;
+            color:var(--fg);font-weight:700;font-size:18px;text-transform:uppercase}
+.cell input::placeholder{color:#ffffff22}
+.ok{box-shadow:inset 0 0 0 2px #2ecc71aa} .bad{box-shadow:inset 0 0 0 2px #ff5ca2aa}
+
+/* clue list */
+.clues{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px;color:var(--muted);font-size:14px}
+.clues h3{color:var(--fg);font-size:14px;margin:0 0 6px}
+.clues ol{margin:0;padding-left:20px}
+.footer{display:flex;justify-content:space-between;align-items:center;padding:12px 16px 14px;
+        font-size:12px;color:var(--muted);border-top:1px solid rgba(255,92,162,.14)}
 </style>
 </head>
 <body>
@@ -37,13 +43,10 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-
   <div class="card">
     <div class="bar"><span class="title">// for you</span></div>
     <figure style="margin:0">
-      <img id="hero" alt="us" style="display:block;width:100%;height:auto;object-fit:cover;background:#111"
-           src="data:image/png;base64,REPLACE_WITH_YOUR_IMAGE_BASE64"/>
-      <figcaption id="heroCaption" style="padding:14px 16px;font-size:18px;text-align:center">
-        I miss you
-      </figcaption>
-      <!-- ↑ To change the caption, edit this text or in JS:
-           document.getElementById('heroCaption').textContent = 'YOUR CAPTION'; -->
+      <img id="hero" alt="us" src="her.png" style="display:block;width:100%;height:auto;object-fit:cover;background:#111"/>
+      <figcaption id="heroCaption" style="padding:14px 16px;font-size:18px;text-align:center">I miss you</figcaption>
+      <!-- To change the caption, edit the text above OR in JS:
+           document.getElementById('heroCaption').textContent = 'YOUR CAPTION' -->
     </figure>
     <div class="content" style="display:flex;justify-content:center;border-top:1px solid rgba(255,92,162,.14)">
       <button class="btn" id="startGame">click to start the game</button>
@@ -51,63 +54,138 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-
   </div>
 </div>
 
-<!-- MINI CROSSWORD -->
+<!-- REAL CROSSWORD -->
 <div id="game" class="shell" style="display:none">
   <div class="card">
     <div class="bar"><span class="title">// mini crossword — solve to unlock your bouquet</span></div>
     <div class="content">
-      <div style="color:var(--muted);font-size:14px;margin-bottom:8px">
-        Type the answers (not case-sensitive). Spaces are okay.
+      <div id="grid" class="grid" aria-label="crossword grid"></div>
+
+      <div class="clues">
+        <div>
+          <h3>Across</h3>
+          <ol>
+            <li><strong>1</strong>. where was our first date (9)</li>
+            <li><strong>5</strong>. what month is my birthday (3)</li>
+            <li><strong>7</strong>. what do I like smacking (7)</li>
+            <li><strong>8</strong>. what’s Adri’s favourite ice cream flavour (13)</li>
+            <li><strong>10</strong>. what’s my favourite colour? (3)</li>
+            <li><strong>6</strong>. first name of my favourite DJ (7)</li>
+          </ol>
+        </div>
+        <div>
+          <h3>Down</h3>
+          <ol>
+            <li><strong>2</strong>. what is my dream car (8)</li>
+            <li><strong>3</strong>. what car do I drive (3)</li>
+            <li><strong>4</strong>. what is my favourite food (5)</li>
+            <li><strong>9</strong>. Adri’s favourite colour (4)</li>
+          </ol>
+        </div>
       </div>
-      <div class="clue"><strong>1.</strong> where was our first date</div>
-      <input class="cw" data-answer="universal" placeholder="Answer 1"/>
-      <div class="clue"><strong>2.</strong> What is my dream car</div>
-      <input class="cw" data-answer="corvette" placeholder="Answer 2"/>
-      <div class="clue"><strong>3.</strong> What car do I drive</div>
-      <input class="cw" data-answer="bmw" placeholder="Answer 3"/>
-      <div class="clue"><strong>4.</strong> What is my favourite food</div>
-      <input class="cw" data-answer="sushi" placeholder="Answer 4"/>
-      <div class="clue"><strong>5.</strong> What month is my birthday</div>
-      <input class="cw" data-answer="nov" placeholder="Answer 5"/>
-      <div class="clue"><strong>6.</strong> First name of my favourite DJ</div>
-      <input class="cw" data-answer="william" placeholder="Answer 6"/>
-      <div class="clue"><strong>7.</strong> What do I like smacking</div>
-      <input class="cw" data-answer="yourass" placeholder="Answer 7"/>
-      <div class="clue"><strong>8.</strong> Whats Adri's favourite ice cream flavour</div>
-      <input class="cw" data-answer="mintchocolate" placeholder="Answer 8"/>
-      <div class="clue"><strong>9.</strong> Adri's favourite colour</div>
-      <input class="cw" data-answer="blue" placeholder="Answer 9"/>
-      <div class="clue"><strong>10.</strong> Whats my favourite colour?</div>
-      <input class="cw" data-answer="red" placeholder="Answer 10"/>
     </div>
+
     <div class="footer">
-      <span>solve all answers to unlock your bouquet 💐</span>
+      <span>fill the grid, then press check ✅</span>
       <div style="display:flex;gap:10px">
         <button class="btn" id="check">check answers</button>
+        <button class="btn" id="clear">clear</button>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-const BOUQUET_URL = "https://yourusername.github.io/roses/"; // <-- change to your bouquet page URL
+// ======= CONFIG =======
+const BOUQUET_URL = "https://yourusername.github.io/roses/"; // <- set your bouquet URL
 
+// Crossword layout (15×15). Words placed to make a true grid with overlaps.
+const WORDS = [
+  // Across
+  {num:8,  answer:"MINTCHOCOLATE", row:0, col:0, dir:"across"},
+  {num:5,  answer:"NOV",           row:1, col:3, dir:"across"},
+  {num:7,  answer:"YOURASS",       row:2, col:1, dir:"across"},
+  {num:1,  answer:"UNIVERSAL",     row:3, col:1, dir:"across"},
+  {num:10, answer:"RED",           row:4, col:3, dir:"across"},
+  {num:6,  answer:"WILLIAM",       row:6, col:8, dir:"across"},
+  // Down
+  {num:2,  answer:"CORVETTE",      row:0, col:4, dir:"down"},
+  {num:3,  answer:"BMW",           row:4, col:6, dir:"down"},
+  {num:4,  answer:"SUSHI",         row:3, col:7, dir:"down"},
+  {num:9,  answer:"BLUE",          row:2, col:9, dir:"down"},
+];
+
+const ROWS = 15, COLS = 15;
+
+// ======= BUILD GRID =======
+const gridEl = document.getElementById('grid');
+const grid = Array.from({length:ROWS},()=>Array.from({length:COLS},()=>({block:true, num:null, sol:null})));
+
+for(const w of WORDS){
+  const A = w.answer.toUpperCase();
+  for(let i=0;i<A.length;i++){
+    const r = w.row + (w.dir==='down'? i : 0);
+    const c = w.col + (w.dir==='across'? i : 0);
+    const cell = grid[r][c];
+    cell.block = false;
+    cell.sol = cell.sol ?? A[i];
+    // mark start number on the first cell of the word
+    if(i===0) cell.num = (cell.num ?? w.num);
+  }
+}
+
+// render
+const inputs = [];
+for(let r=0;r<ROWS;r++){
+  for(let c=0;c<COLS;c++){
+    const cell = grid[r][c];
+    if(cell.block){
+      const d = document.createElement('div'); d.className='cell block';
+      gridEl.appendChild(d);
+    }else{
+      const d = document.createElement('div'); d.className='cell';
+      if(cell.num){ const s=document.createElement('span'); s.className='num'; s.textContent=cell.num; d.appendChild(s); }
+      const i = document.createElement('input');
+      i.setAttribute('maxlength','1');
+      i.dataset.r = r; i.dataset.c = c; i.dataset.sol = cell.sol;
+      i.addEventListener('input', (e)=>{ e.target.value = e.target.value.toUpperCase().replace(/[^A-Z]/g,''); });
+      d.appendChild(i); gridEl.appendChild(d); inputs.push(i);
+    }
+  }
+}
+
+// ======= CHECK / CLEAR =======
+function norm(x){return (x||'').toUpperCase();}
+function isFilledCorrect(i){ return norm(i.value) === norm(i.dataset.sol); }
+
+document.getElementById('check').addEventListener('click', ()=>{
+  let ok = true, allFilled = true;
+  inputs.forEach(i=>{
+    const filled = !!i.value;
+    if(!filled) allFilled = false;
+    const good = filled && isFilledCorrect(i);
+    i.classList.toggle('ok', good);
+    i.classList.toggle('bad', filled && !good);
+    if(!good) ok = false;
+  });
+  if(ok && allFilled){
+    window.location.href = BOUQUET_URL;
+  }else{
+    // focus first empty/incorrect cell
+    (inputs.find(i=>!i.value) || inputs.find(i=>!isFilledCorrect(i)) || inputs[0]).focus();
+  }
+});
+
+document.getElementById('clear').addEventListener('click', ()=>{
+  inputs.forEach(i=>{ i.value=''; i.classList.remove('ok','bad'); });
+  inputs[0]?.focus();
+});
+
+// ======= intro → game =======
 document.getElementById('startGame').addEventListener('click', ()=>{
   document.getElementById('intro').style.display='none';
   document.getElementById('game').style.display='grid';
-});
-
-function norm(s){return (s||'').toLowerCase().replace(/\\s+/g,'').trim();}
-document.getElementById('check').addEventListener('click', ()=>{
-  let allGood = true;
-  document.querySelectorAll('#game .cw').forEach(inp=>{
-    const ok = norm(inp.value) === norm(inp.dataset.answer);
-    inp.style.border = ok ? '1px solid #2ecc71' : '1px solid #ff5ca2';
-    if(!ok) allGood = false;
-  });
-  if(allGood){
-    window.location.href = BOUQUET_URL; // redirect to your bouquet when solved
-  }
+  inputs[0]?.focus();
 });
 </script>
 </body>
