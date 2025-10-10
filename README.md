@@ -1,2 +1,6 @@
 # Silly_Little_Repo
-Repo for me to save random personal things
+Every silly little coding thing I've made for Baobei
+
+- [Crossword](crossword.html)
+- [For Xiao Tuzi](for_xiao_tuzi.html)
+- [Ravebae](ravebae.html)
