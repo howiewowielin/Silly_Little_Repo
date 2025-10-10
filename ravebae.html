@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ravebae</title>
+    <style>
+      :root {
+        --pink: #ff6fa9;
+        --hotpink: #ff3d7a;
+        --rose: #ffd1e6;
+        --red: #ff4d6d;
+        --bg1: #fff0f5;
+        --bg2: #ffe1ec;
+        --text: #5a0031;
+      }
+
+      html, body { height: 100%; }
+      body {
+        margin: 0;
+        color: var(--text);
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji;
+        background:
+          radial-gradient(60px 60px at 20% 10%, rgba(255, 157, 194, 0.35), transparent 60%),
+          radial-gradient(80px 80px at 80% 0%, rgba(255, 125, 170, 0.35), transparent 60%),
+          linear-gradient(135deg, var(--bg1), var(--bg2));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+
+      .card {
+        position: relative;
+        z-index: 1;
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(8px);
+        border: 2px solid var(--rose);
+        border-radius: 16px;
+        padding: 28px 24px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(255, 61, 122, 0.18);
+        max-width: 520px;
+        margin: 16px;
+      }
+
+      h1 {
+        margin: 0 0 12px;
+        font-size: 28px;
+        line-height: 1.25;
+        letter-spacing: 0.2px;
+      }
+
+      .highlight { color: var(--hotpink); }
+
+      .buttons {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        margin-top: 12px;
+        flex-wrap: wrap;
+      }
+
+      button {
+        appearance: none;
+        border: none;
+        border-radius: 9999px;
+        padding: 12px 20px;
+        font-weight: 700;
+        color: #ffffff;
+        background: linear-gradient(135deg, var(--pink), var(--hotpink));
+        box-shadow: 0 8px 20px rgba(255, 61, 122, 0.30);
+        cursor: pointer;
+        transition: transform 80ms ease, box-shadow 200ms ease;
+      }
+      button:hover { transform: translateY(-1px); box-shadow: 0 12px 26px rgba(255, 61, 122, 0.38); }
+      button:active { transform: translateY(0); box-shadow: 0 6px 16px rgba(255, 61, 122, 0.26); }
+
+      .confirm { display: none; font-size: 20px; margin-top: 12px; }
+      .show-confirm .confirm { display: block; }
+
+      .pulse-heart { display: inline-block; color: var(--hotpink); margin-left: 6px; animation: pulse 900ms ease-in-out infinite; }
+      @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.25); } }
+
+      #hearts {
+        position: fixed;
+        inset: 0;
+        overflow: hidden;
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      .heart {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        font-size: 18px;
+        will-change: transform, opacity;
+        animation: floatUp 1800ms ease-out forwards;
+        text-shadow: 0 2px 8px rgba(255, 61, 122, 0.25);
+      }
+
+      @keyframes floatUp {
+        0%   { transform: translate(var(--x), var(--y)) scale(0.6) rotate(0deg); opacity: 0; }
+        10%  { opacity: 1; }
+        100% { transform: translate(calc(var(--x) + var(--driftX)), calc(var(--y) - 140px)) scale(1.2) rotate(20deg); opacity: 0; }
+      }
+
+      body.love { animation: bgGlow 3s ease-in-out infinite; }
+      @keyframes bgGlow { 0%, 100% { filter: none; } 50% { filter: brightness(1.05) saturate(1.06); } }
+
+      .small-note { font-size: 12px; color: #7a2b4a; margin-top: 8px; }
+    </style>
+  </head>
+  <body>
+    <div id="hearts" aria-hidden="true"></div>
+
+    <div class="card" id="card">
+      <h1>
+        will u be my <span class="highlight">ravebae</span>?
+      </h1>
+      <div class="buttons" id="buttons">
+        <button type="button" onclick="startLove()">Yes</button>
+        <button type="button" onclick="startLove()">Yes</button>
+      </div>
+      <div class="confirm" id="confirm">
+        <div>yay! see u on the dancefloor<span class="pulse-heart">❤</span></div>
+        <div class="small-note">(no takesies backsies)</div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        const heartsLayer = document.getElementById('hearts');
+        const buttons = document.getElementById('buttons');
+        const confirm = document.getElementById('confirm');
+        const card = document.getElementById('card');
+
+        window.startLove = function startLove() {
+          buttons.style.display = 'none';
+          document.body.classList.add('love');
+          card.classList.add('show-confirm');
+          burstHearts(24);
+          let t = 0;
+          const interval = setInterval(() => {
+            spawnHeartAtRandom();
+            if (++t > 40) clearInterval(interval);
+          }, 120);
+        };
+
+        function spawnHeartAt(x, y) {
+          const heart = document.createElement('div');
+          heart.className = 'heart';
+          heart.textContent = '❤';
+          const driftX = (Math.random() * 60 - 30) + 'px';
+          const startX = (x - window.innerWidth / 2) + (Math.random() * 10 - 5) + 'px';
+          const startY = (y - window.innerHeight / 2) + (Math.random() * 10 - 5) + 'px';
+          heart.style.setProperty('--x', startX);
+          heart.style.setProperty('--y', startY);
+          heart.style.setProperty('--driftX', driftX);
+          heart.style.color = randomPink();
+          heartsLayer.appendChild(heart);
+          heart.addEventListener('animationend', () => heart.remove());
+        }
+
+        function spawnHeartAtRandom() {
+          const x = Math.random() * window.innerWidth;
+          const y = window.innerHeight - Math.random() * (window.innerHeight * 0.4);
+          spawnHeartAt(x, y);
+        }
+
+        function burstHearts(count) {
+          const rect = card.getBoundingClientRect();
+          const centerX = rect.left + rect.width / 2;
+          const centerY = rect.top + rect.height / 2;
+          for (let i = 0; i < count; i++) {
+            setTimeout(() => spawnHeartAt(centerX, centerY), i * 24);
+          }
+        }
+
+        function randomPink() {
+          const colors = ['#ff3d7a', '#ff6fa9', '#ff4d6d', '#ff93b3', '#ff6b9e'];
+          return colors[(Math.random() * colors.length) | 0];
+        }
+      })();
+    </script>
+  </body>
+  </html>
+
+
