@@ -313,8 +313,10 @@ loadLevel(0);
 function resize() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    const s = Math.min(canvas.width / GAME_WIDTH, canvas.height / GAME_HEIGHT);
-    scale = s;
+    const cover = Math.max(canvas.width / GAME_WIDTH, canvas.height / GAME_HEIGHT);
+    const contain = Math.min(canvas.width / GAME_WIDTH, canvas.height / GAME_HEIGHT);
+    const portrait = canvas.height >= canvas.width;
+    scale = portrait ? cover : contain;
     offsetX = (canvas.width - GAME_WIDTH * scale) / 2;
     offsetY = (canvas.height - GAME_HEIGHT * scale) / 2;
 }
