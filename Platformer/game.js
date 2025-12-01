@@ -42,6 +42,11 @@ const moveSpeed = 3.0;
 const maxSpeedX = 3.5; // slower top speed
 const jumpStrength = 13.0; // a touch stronger for bigger sprite
 
+// Final-screen fireworks
+let fireworks = [];
+let lastFireworkFrame = 0;
+const FIREWORK_COLORS = ['#ff72b6', '#ffd166', '#72f1b8', '#6ec1ff', '#f28eff'];
+
 // Player
 const player = {
     x: 60,
@@ -109,10 +114,7 @@ const levels = [
                 { x: 180, y: 312, w: 28, h: 18, minX: 170, maxX: 265, speed: 1.1, dir: 1 }
             ],
             timedSpikes: [
-                { x: 170, y: 330 - 16, w: 95, h: 16, period: 180, up: 60, phase: 0 },
-                { x: 335, y: 290 - 16, w: 95, h: 16, period: 180, up: 60, phase: 45 },
-                { x: 500, y: 250 - 16, w: 95, h: 16, period: 180, up: 60, phase: 90 },
-                { x: 660, y: 220 - 16, w: 95, h: 16, period: 180, up: 60, phase: 135 }
+                { x: 335, y: 290 - 16, w: 95, h: 16, period: 180, up: 60, phase: 30 }
             ]
         }
     },
@@ -193,18 +195,21 @@ let currentLevel = levels[levelIndex];
 
 // Editable messages shown after each level (fill in your quotes!)
 const levelMessages = [
-    'Level 1 complete! (Edit me with something you love about her ♥)',
-    'Level 2 complete! (Edit me with your own sweet line)',
-    'Level 3 complete! (Another compliment goes here)',
-    'Level 4 complete! (Keep the love coming)',
-    'Level 5 complete! You did it! (Your finale message)'
+    'Level 1 complete! You completed the first level bby. Keep it going my favourite f1 driver and honda speedster!',
+    'Level 2 complete! Good job my sexy lopunny, you are one more level closer to the finish line.',
+    'Level 3 complete! To the sweetest and most thoughtful girl I know. You are my favourite person in the world.',
+    'Level 4 complete! One more level after this one bby! To my forever ravebae and the girl with the prettiest eyes I have ever seen,',
+    'Level 5 complete! You did it! To the girl who makes me feel like I am the luckiest person in the world.',
 ];
 
 // Final message after last level (customize this)
-const finalMessage = 'We reached the end, but my love for you never does. ♥';
+const finalMessage = 'Hi bby, I know I did not react in the moment but I wanted you to know that the birthday gift really was the sweetest thing someone has ever done for me and I think about it everyday. I know my calm reactions and monotone voice does not help my case, and I process reactions differently how you might want to recieve it. But I really did love the birthday surprise you made for me. I hope we get to keep working together and growing together bby. You matter to me bby and I will not let you go so I promise to keep working hard for u bby so I hope u do the same for me too :)))). To the prettiest ravebae, cutest lab tech, and hottest pokemon go player out there I am grateful and lucky to have u my xiao tuzi.';
+
+// Opening screen message (customize this)
+const openingMessage = 'For bby ♡\nI am still learning words of affirmation and how to express appreciation.\n I made this game for you to show I really do appreciate everything you do for me bby.\n I hope it brings out your pretty smile.\nCatch all the chibi garchomps bby!!!!';
 
 // Simple message/overlay state
-let mode = 'playing'; // 'playing' | 'message' | 'final'
+let mode = 'title'; // 'title' | 'playing' | 'message' | 'final'
 let messageText = '';
 let pendingNextLevelIndex = null;
 
@@ -218,17 +223,26 @@ function showFinalMessage(text) {
     mode = 'final';
     messageText = text || finalMessage;
     pendingNextLevelIndex = 0; // restart index
+    // reset fireworks
+    fireworks = [];
+    lastFireworkFrame = frameCount;
 }
 
 function advanceMessage() {
-    if (mode === 'message') {
+    if (mode === 'title') {
+        mode = 'playing';
+        loadLevel(0);
+        pendingNextLevelIndex = null;
+    } else if (mode === 'message') {
+        // If we've just completed the last level, show the final message next
+        if (pendingNextLevelIndex != null && pendingNextLevelIndex >= levels.length) {
+            showFinalMessage(finalMessage);
+            pendingNextLevelIndex = null;
+            return;
+        }
         mode = 'playing';
         if (pendingNextLevelIndex != null) {
-            if (pendingNextLevelIndex < levels.length) {
-                loadLevel(pendingNextLevelIndex);
-            } else {
-                loadLevel(0);
-            }
+            loadLevel(pendingNextLevelIndex);
         }
         pendingNextLevelIndex = null;
     } else if (mode === 'final') {
@@ -309,11 +323,21 @@ resize();
 
 // Input Handling
 window.addEventListener('keydown', (e) => {
-    if ((mode === 'message' || mode === 'final') && (e.code === 'Space' || e.code === 'Enter' || e.code === 'ArrowUp')) {
+    if ((mode === 'title' || mode === 'message' || mode === 'final') && (e.code === 'Space' || e.code === 'Enter' || e.code === 'ArrowUp')) {
         e.preventDefault();
         advanceMessage();
         return;
     }
+	// Developer shortcut: press '8' to complete current level
+	if (e.key === '8' || e.code === 'Digit8') {
+		e.preventDefault();
+		if (mode === 'playing') {
+			const next = levelIndex + 1;
+			const msg = levelMessages[levelIndex] || 'Level complete!';
+			showLevelCompleteMessage(msg, next);
+		}
+		return;
+	}
     if (keys.hasOwnProperty(e.code)) keys[e.code] = true;
     if (e.code === 'Space') e.preventDefault();
 });
@@ -383,12 +407,10 @@ function update() {
 
     if (rectsOverlap(player, currentLevel.goal)) {
         const next = levelIndex + 1;
-        if (next < levels.length) {
-            const msg = levelMessages[levelIndex] || 'Level complete!';
-            showLevelCompleteMessage(msg, next);
-        } else {
-            showFinalMessage(finalMessage);
-        }
+        const msg = levelMessages[levelIndex] || 'Level complete!';
+        // Always show the level message; if it's the final level, we set next to levels.length,
+        // then advanceMessage() will transition to the final screen.
+        showLevelCompleteMessage(msg, next);
     }
 
     // Hazard collisions
@@ -492,8 +514,20 @@ function draw() {
     ctx.font = '16px system-ui, -apple-system, Arial';
     ctx.fillText(`Level ${levelIndex + 1} / ${levels.length}`, 12, 22);
 
-    // Message overlay
-    if (mode === 'message') {
+    // Overlays
+    if (mode === 'title') {
+        ctx.fillStyle = 'rgba(0,0,0,0.6)';
+        ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+        ctx.fillStyle = '#ffdde8';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.font = '28px system-ui, -apple-system, Arial';
+        wrapText(ctx, openingMessage, GAME_WIDTH / 2, GAME_HEIGHT / 2 - 12, 600, 32);
+        ctx.font = '14px system-ui, -apple-system, Arial';
+        ctx.fillText('Press Space/Enter or tap to start', GAME_WIDTH / 2, GAME_HEIGHT / 2 + 140);
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'alphabetic';
+    } else if (mode === 'message') {
         ctx.fillStyle = 'rgba(0,0,0,0.5)';
         ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
         ctx.fillStyle = '#ffffff';
@@ -507,10 +541,12 @@ function draw() {
     } else if (mode === 'final') {
         ctx.fillStyle = 'rgba(0,0,0,0.6)';
         ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+        // fireworks on top of overlay
+        drawFireworks(ctx);
         ctx.fillStyle = '#ffdde8';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.font = '28px system-ui, -apple-system, Arial';
+        ctx.font = '22px system-ui, -apple-system, Arial';
         wrapText(ctx, messageText, GAME_WIDTH / 2, GAME_HEIGHT / 2 - 12, 600, 32);
         ctx.font = '14px system-ui, -apple-system, Arial';
         ctx.fillText('Tap to restart', GAME_WIDTH / 2, GAME_HEIGHT / 2 + 140);
@@ -521,6 +557,7 @@ function draw() {
 
 function loop() {
     update();
+    if (mode === 'final') updateFireworks();
     draw();
     frameCount++;
     requestAnimationFrame(loop);
@@ -669,4 +706,63 @@ function wrapText(ctx, text, centerX, startY, maxWidth, lineHeight) {
         ctx.fillText(l, centerX, y);
         y += lineHeight;
     }
+}
+
+// Fireworks helpers
+function spawnFireworkBurst(cx, cy) {
+    const count = 28 + Math.floor(Math.random() * 14);
+    const color = FIREWORK_COLORS[Math.floor(Math.random() * FIREWORK_COLORS.length)];
+    for (let i = 0; i < count; i++) {
+        const angle = (Math.PI * 2 * i) / count + Math.random() * 0.25;
+        const speed = 2.0 + Math.random() * 2.5;
+        fireworks.push({
+            x: cx,
+            y: cy,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            life: 60 + Math.floor(Math.random() * 20),
+            maxLife: 60,
+            color,
+            size: 2 + Math.random() * 2
+        });
+    }
+}
+
+function updateFireworks() {
+    // spawn periodically
+    if (frameCount - lastFireworkFrame >= 28) {
+        const x = 80 + Math.random() * (GAME_WIDTH - 160);
+        const y = 90 + Math.random() * 160;
+        spawnFireworkBurst(x, y);
+        lastFireworkFrame = frameCount;
+    }
+    const next = [];
+    for (const p of fireworks) {
+        p.vy += 0.03;
+        p.vx *= 0.99;
+        p.vy *= 0.99;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life -= 1;
+        if (p.life > 0) next.push(p);
+    }
+    fireworks = next;
+}
+
+function drawFireworks(ctx) {
+    for (const p of fireworks) {
+        const a = Math.max(0, Math.min(1, p.life / p.maxLife));
+        ctx.fillStyle = applyAlphaToHex(p.color, a);
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+
+function applyAlphaToHex(hex, alpha) {
+    // hex like #rrggbb
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r},${g},${b},${alpha})`;
 }
