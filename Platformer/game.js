@@ -95,19 +95,24 @@ const levels = [
         goal: { x: 740, y: 200, w: 24, h: 24 },
         platforms: [
             { x: 0, y: 380, w: 800, h: 70 },
-            { x: 160, y: 330, w: 105, h: 24 },
-            { x: 305, y: 290, w: 105, h: 24 },
-            { x: 455, y: 250, w: 105, h: 24 },
-            { x: 600, y: 220, w: 120, h: 24 }
+            { x: 170, y: 330, w: 95, h: 24 },
+            { x: 335, y: 290, w: 95, h: 24 },
+            { x: 500, y: 250, w: 95, h: 24 },
+            { x: 660, y: 220, w: 95, h: 24 }
         ],
         obstacles: {
             spikes: [
                 { x: 230, y: 360, w: 80, h: 20 },
                 { x: 520, y: 360, w: 80, h: 20 }
             ],
-            patrols: [],
+            patrols: [
+                { x: 180, y: 312, w: 28, h: 18, minX: 170, maxX: 265, speed: 1.1, dir: 1 }
+            ],
             timedSpikes: [
-                { x: 420, y: 360, w: 60, h: 20, period: 100, up: 50, phase: 30 }
+                { x: 170, y: 330 - 16, w: 95, h: 16, period: 180, up: 60, phase: 0 },
+                { x: 335, y: 290 - 16, w: 95, h: 16, period: 180, up: 60, phase: 45 },
+                { x: 500, y: 250 - 16, w: 95, h: 16, period: 180, up: 60, phase: 90 },
+                { x: 660, y: 220 - 16, w: 95, h: 16, period: 180, up: 60, phase: 135 }
             ]
         }
     },
@@ -257,9 +262,10 @@ function loadLevel(i) {
     // Auto-add TIMED spikes above thin platforms for levels 3-5 (indexes 2..4)
     const isAutoSpikeLevel = levelIndex >= 2 && levelIndex <= 4;
     if (isAutoSpikeLevel) {
-        let period = 120, up = 36, phaseStep = 28; // lenient default (level 3), more spaced
-        if (levelIndex === 3) { period = 100; up = 50; phaseStep = 24; } // level 4: medium, spaced
-        if (levelIndex === 4) { period = 80; up = 50; phaseStep = 20; }  // level 5: harder, spaced
+        // 2x slower cycles for levels 3–5; keep proportional spacing
+        let period = 240, up = 72, phaseStep = 56; // level 3 (was 120/36/28)
+        if (levelIndex === 3) { period = 240; up = 100; phaseStep = 48; } // level 4 (was 100/50/24)
+        if (levelIndex === 4) { period = 240; up = 60; phaseStep = 60; }  // level 5 (was 80/50/20)
         const spikeH = 16;
         const autoTimed = [];
         let idx = 0;
