@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Lucky Red Envelope</title>
+  <style>
+    :root {
+      --bg-top: #6f0000;
+      --bg-bottom: #1d0000;
+      --gold: #f7c948;
+      --gold-soft: #ffe082;
+      --red: #bc1212;
+      --red-dark: #8d0909;
+      --paper: #ffd7a2;
+      --text: #fff8e6;
+      --safe-top: env(safe-area-inset-top);
+      --safe-bottom: env(safe-area-inset-bottom);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      min-height: 100%;
+      font-family: "Avenir Next", "Segoe UI", sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at 20% 0%, #8d0909 0%, transparent 35%),
+                  radial-gradient(circle at 80% 10%, #a90f0f 0%, transparent 30%),
+                  linear-gradient(165deg, var(--bg-top) 0%, var(--bg-bottom) 75%);
+      overflow: hidden;
+    }
+
+    body {
+      min-height: 100dvh;
+      display: grid;
+      place-items: center;
+      padding: max(16px, var(--safe-top)) 14px max(22px, var(--safe-bottom));
+    }
+
+    .scene {
+      width: min(420px, 100%);
+      height: min(880px, calc(100dvh - var(--safe-top) - var(--safe-bottom) - 18px));
+      position: relative;
+      border-radius: 26px;
+      overflow: hidden;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(0, 0, 0, 0.3));
+      box-shadow: 0 22px 60px rgba(0, 0, 0, 0.48);
+      isolation: isolate;
+    }
+
+    .scene::before,
+    .scene::after {
+      content: "";
+      position: absolute;
+      inset: -35% -30%;
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0.22;
+      z-index: 0;
+    }
+
+    .scene::before {
+      background: radial-gradient(circle, rgba(247, 201, 72, 0.5) 0%, transparent 55%);
+      animation: pulse 5s ease-in-out infinite;
+    }
+
+    .scene::after {
+      background: radial-gradient(circle, rgba(255, 50, 50, 0.5) 0%, transparent 60%);
+      animation: pulse 6s ease-in-out infinite reverse;
+    }
+
+    .header {
+      position: absolute;
+      top: 6%;
+      left: 0;
+      right: 0;
+      text-align: center;
+      z-index: 2;
+      padding: 0 18px;
+      text-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: clamp(1.8rem, 6vw, 2.5rem);
+      letter-spacing: 0.06em;
+    }
+
+    .header p {
+      margin: 0.6rem auto 0;
+      max-width: 30ch;
+      line-height: 1.35;
+      font-size: clamp(0.95rem, 3.8vw, 1.1rem);
+      opacity: 0.9;
+    }
+
+    .envelope-wrap {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      z-index: 4;
+      padding: 0 22px;
+    }
+
+    .envelope {
+      width: min(340px, 88vw);
+      aspect-ratio: 1.4 / 1;
+      position: relative;
+      cursor: pointer;
+      transform-origin: center bottom;
+      transition: transform 550ms cubic-bezier(.2, .8, .2, 1);
+      filter: drop-shadow(0 16px 20px rgba(0, 0, 0, 0.4));
+    }
+
+    .envelope:active {
+      transform: scale(0.985);
+    }
+
+    .envelope-front,
+    .envelope-flap,
+    .envelope-letter {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      border-radius: 14px;
+    }
+
+    .envelope-front {
+      bottom: 0;
+      height: 78%;
+      background: linear-gradient(180deg, var(--red) 0%, var(--red-dark) 100%);
+      border: 2px solid rgba(247, 201, 72, 0.5);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    .seal {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #ffdf90 0%, #f7c948 58%, #ca8f07 100%);
+      border: 2px solid rgba(125, 70, 0, 0.5);
+      display: grid;
+      place-items: center;
+      font-size: 1.5rem;
+      color: #8f0a0a;
+      font-weight: 800;
+      box-shadow: inset 0 2px 8px rgba(255, 255, 255, 0.45);
+    }
+
+    .envelope-flap {
+      top: 2%;
+      height: 60%;
+      background: linear-gradient(180deg, #d41919 0%, #8c0909 100%);
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+      border: 2px solid rgba(247, 201, 72, 0.45);
+      transform-origin: top center;
+      transition: transform 900ms cubic-bezier(.2, .9, .2, 1);
+      z-index: 4;
+    }
+
+    .envelope-letter {
+      bottom: 12%;
+      width: 88%;
+      left: 6%;
+      height: 74%;
+      background: linear-gradient(180deg, #ffe6bf 0%, var(--paper) 100%);
+      color: #871515;
+      padding: 16px 16px 12px;
+      text-align: center;
+      transform: translateY(36%);
+      transition: transform 900ms cubic-bezier(.24, .95, .28, 1);
+      z-index: 2;
+      border: 2px solid rgba(170, 106, 31, 0.3);
+      box-shadow: inset 0 -8px 18px rgba(255, 100, 45, 0.12);
+    }
+
+    .envelope-letter h2 {
+      margin: 0.2rem 0;
+      font-size: clamp(1.05rem, 4vw, 1.25rem);
+      letter-spacing: 0.03em;
+    }
+
+    .envelope-letter p {
+      margin: 0.45rem 0;
+      font-size: clamp(0.88rem, 3.2vw, 1rem);
+      line-height: 1.25;
+    }
+
+    .tap-hint {
+      position: absolute;
+      bottom: 8%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.95rem;
+      letter-spacing: 0.06em;
+      opacity: 0.88;
+      z-index: 5;
+      animation: bob 1.6s ease-in-out infinite;
+      text-transform: uppercase;
+      pointer-events: none;
+      text-shadow: 0 3px 10px rgba(0, 0, 0, 0.45);
+    }
+
+    .rain {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 6;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      top: -12%;
+      will-change: transform, opacity;
+      animation-name: fall;
+      animation-timing-function: linear;
+      animation-fill-mode: forwards;
+      opacity: 0;
+    }
+
+    .coin {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fff2bc 0%, #f7c948 60%, #b37900 100%);
+      border: 1px solid rgba(105, 62, 3, 0.4);
+      box-shadow: inset 0 2px 6px rgba(255, 255, 255, 0.4);
+    }
+
+    .coin::after {
+      content: "$";
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: #9f0f0f;
+      font-weight: 800;
+      font-size: 15px;
+    }
+
+    .blessing {
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(247, 201, 72, 0.95);
+      color: #791313;
+      font-size: 0.86rem;
+      font-weight: 700;
+      white-space: nowrap;
+      border: 1px solid rgba(121, 19, 19, 0.2);
+    }
+
+    .open .envelope-flap {
+      transform: rotateX(180deg);
+    }
+
+    .open .envelope-letter {
+      transform: translateY(-46%);
+    }
+
+    .open .tap-hint {
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translate3d(0, 0, 0) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      100% {
+        transform: translate3d(var(--dx), 120vh, 0) rotate(var(--rot));
+        opacity: 0;
+      }
+    }
+
+    @keyframes bob {
+      0%,
+      100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(-8px); }
+    }
+
+    @keyframes pulse {
+      0%,
+      100% { transform: scale(1); opacity: 0.2; }
+      50% { transform: scale(1.15); opacity: 0.35; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .scene::before,
+      .scene::after,
+      .tap-hint {
+        animation: none;
+      }
+
+      .particle {
+        animation-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="scene" id="scene">
+    <header class="header">
+      <h1>Happy Chinese New Year</h1>
+      <p>Tap the red envelope for a shower of luck, wealth, and love.</p>
+    </header>
+
+    <section class="envelope-wrap">
+      <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Open red envelope">
+        <div class="envelope-letter">
+          <h2>For My Favorite Person</h2>
+          <p>May your year be bright, rich in joy, and full of good fortune.</p>
+          <p>Wishing you health, love, and endless lucky moments.</p>
+        </div>
+        <div class="envelope-flap"></div>
+        <div class="envelope-front">
+          <div class="seal">Fu</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="tap-hint">Tap to Open</div>
+    <div class="rain" id="rain"></div>
+  </main>
+
+  <script>
+    const scene = document.getElementById('scene');
+    const envelope = document.getElementById('envelope');
+    const rain = document.getElementById('rain');
+
+    const blessings = ['LUCK', 'PROSPERITY', 'JOY', 'WEALTH', 'LOVE'];
+
+    function makeParticle(type) {
+      const el = document.createElement('div');
+      el.className = `particle ${type}`;
+
+      const startX = Math.random() * 100;
+      const drift = (Math.random() * 70 - 35).toFixed(1) + 'vw';
+      const rotate = (Math.random() * 720 - 360).toFixed(0) + 'deg';
+      const duration = (Math.random() * 1.7 + 2.2).toFixed(2) + 's';
+      const delay = (Math.random() * 0.55).toFixed(2) + 's';
+
+      el.style.left = `${startX}%`;
+      el.style.setProperty('--dx', drift);
+      el.style.setProperty('--rot', rotate);
+      el.style.animationDuration = duration;
+      el.style.animationDelay = delay;
+
+      if (type === 'blessing') {
+        el.textContent = blessings[Math.floor(Math.random() * blessings.length)];
+      }
+
+      el.addEventListener('animationend', () => el.remove());
+      rain.appendChild(el);
+    }
+
+    function celebrationBurst() {
+      for (let i = 0; i < 46; i += 1) {
+        setTimeout(() => makeParticle('coin'), i * 34);
+      }
+      for (let i = 0; i < 14; i += 1) {
+        setTimeout(() => makeParticle('blessing'), i * 110);
+      }
+    }
+
+    let opened = false;
+    function openEnvelope() {
+      if (!opened) {
+        opened = true;
+        scene.classList.add('open');
+      }
+      celebrationBurst();
+    }
+
+    envelope.addEventListener('click', openEnvelope);
+    envelope.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        openEnvelope();
+      }
+    });
+  </script>
+</body>
+</html>
