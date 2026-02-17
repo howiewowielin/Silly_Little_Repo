@@ -236,19 +236,20 @@
     }
 
     .envelope-letter {
-      bottom: 14%;
+      bottom: 16%;
       width: 86%;
       left: 7%;
-      height: 72%;
+      height: 68%;
       background: linear-gradient(180deg, #ffe6bf 0%, var(--paper) 100%);
       color: #871515;
       padding: 18px 16px 12px;
       text-align: center;
-      transform: translateY(44%);
+      transform: translateY(58%);
       transition: transform 900ms cubic-bezier(.24, .95, .28, 1);
-      z-index: 2;
+      z-index: 1;
       border: 2px solid rgba(170, 106, 31, 0.3);
       box-shadow: inset 0 -8px 18px rgba(255, 100, 45, 0.12);
+      overflow: hidden;
     }
 
     .envelope-letter h2 {
@@ -332,7 +333,8 @@
     }
 
     .open .envelope-letter {
-      transform: translateY(-40%);
+      transform: translateY(-34%);
+      z-index: 3;
     }
 
     .open .tap-hint {
