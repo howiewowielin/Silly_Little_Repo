@@ -28,7 +28,7 @@
       margin: 0;
       width: 100%;
       min-height: 100%;
-      font-family: "Avenir Next", "Segoe UI", sans-serif;
+      font-family: "PingFang SC", "Hiragino Sans GB", "Avenir Next", "Segoe UI", sans-serif;
       color: var(--text);
       background: radial-gradient(circle at 20% 0%, #8d0909 0%, transparent 35%),
                   radial-gradient(circle at 80% 10%, #a90f0f 0%, transparent 30%),
@@ -142,6 +142,20 @@
       overflow: hidden;
     }
 
+    .envelope-front::before {
+      content: "";
+      position: absolute;
+      inset: 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(247, 201, 72, 0.42);
+      background:
+        radial-gradient(circle at 20% 22%, rgba(247, 201, 72, 0.18) 0%, transparent 26%),
+        radial-gradient(circle at 80% 22%, rgba(247, 201, 72, 0.18) 0%, transparent 26%),
+        radial-gradient(circle at 20% 80%, rgba(247, 201, 72, 0.18) 0%, transparent 26%),
+        radial-gradient(circle at 80% 80%, rgba(247, 201, 72, 0.18) 0%, transparent 26%);
+      pointer-events: none;
+    }
+
     .seal {
       width: 72px;
       height: 72px;
@@ -150,10 +164,11 @@
       border: 2px solid rgba(125, 70, 0, 0.5);
       display: grid;
       place-items: center;
-      font-size: 1.5rem;
+      font-size: 2rem;
       color: #8f0a0a;
       font-weight: 800;
       box-shadow: inset 0 2px 8px rgba(255, 255, 255, 0.45);
+      font-family: "STKaiti", "Kaiti SC", "Songti SC", serif;
     }
 
     .envelope-flap {
@@ -314,25 +329,25 @@
 <body>
   <main class="scene" id="scene">
     <header class="header">
-      <h1>Happy Chinese New Year</h1>
-      <p>Tap the red envelope for a shower of luck, wealth, and love.</p>
+      <h1>新年快乐 • Happy Chinese New Year</h1>
+      <p>Baobei, tap the red envelope for a shower of luck, wealth, and love.</p>
     </header>
 
     <section class="envelope-wrap">
       <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Open red envelope">
         <div class="envelope-letter">
-          <h2>For My Favorite Person</h2>
-          <p>May your year be bright, rich in joy, and full of good fortune.</p>
-          <p>Wishing you health, love, and endless lucky moments.</p>
+          <h2>To Baobei</h2>
+          <p>愿你新的一年，平安喜乐，万事顺意。</p>
+          <p>With all my love and luck, from bby.</p>
         </div>
         <div class="envelope-flap"></div>
         <div class="envelope-front">
-          <div class="seal">Fu</div>
+          <div class="seal">福</div>
         </div>
       </div>
     </section>
 
-    <div class="tap-hint">Tap to Open</div>
+    <div class="tap-hint">Tap to Open 开红包</div>
     <div class="rain" id="rain"></div>
   </main>
 
@@ -341,7 +356,7 @@
     const envelope = document.getElementById('envelope');
     const rain = document.getElementById('rain');
 
-    const blessings = ['LUCK', 'PROSPERITY', 'JOY', 'WEALTH', 'LOVE'];
+    const blessings = ['好运', '发财', '平安', '幸福', '甜蜜'];
 
     function makeParticle(type) {
       const el = document.createElement('div');
