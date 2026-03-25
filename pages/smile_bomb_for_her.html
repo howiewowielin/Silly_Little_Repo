@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smile Bomb For My Girl</title>
+    <style>
+      :root {
+        --bg1: #fff6d8;
+        --bg2: #ffd9ec;
+        --bg3: #c8f7ff;
+        --ink: #2c1b2e;
+        --pink: #ff4f9f;
+        --rose: #ff2f7d;
+        --gold: #ffbf4d;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        color: var(--ink);
+        font-family: "Trebuchet MS", "Comic Sans MS", "Avenir Next", sans-serif;
+        background: radial-gradient(circle at 20% 20%, var(--bg1), transparent 45%),
+          radial-gradient(circle at 80% 30%, var(--bg3), transparent 45%),
+          linear-gradient(140deg, #ffe3f2, var(--bg2));
+      }
+
+      .hearts {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+      }
+
+      .heart {
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        background: var(--rose);
+        transform: rotate(45deg);
+        opacity: 0;
+        animation: floatUp linear infinite;
+      }
+
+      .heart::before,
+      .heart::after {
+        content: "";
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: inherit;
+      }
+
+      .heart::before {
+        left: -8px;
+      }
+
+      .heart::after {
+        top: -8px;
+      }
+
+      @keyframes floatUp {
+        0% {
+          transform: translateY(40px) rotate(45deg) scale(0.3);
+          opacity: 0;
+        }
+        10% {
+          opacity: 0.8;
+        }
+        80% {
+          opacity: 0.7;
+        }
+        100% {
+          transform: translateY(-120vh) rotate(45deg) scale(1);
+          opacity: 0;
+        }
+      }
+
+      .card {
+        position: relative;
+        width: min(92vw, 680px);
+        background: rgba(255, 255, 255, 0.82);
+        border: 3px solid rgba(255, 79, 159, 0.35);
+        border-radius: 28px;
+        box-shadow: 0 18px 40px rgba(126, 43, 87, 0.22);
+        padding: 28px 26px 36px;
+        text-align: center;
+        backdrop-filter: blur(6px);
+        animation: popIn 700ms ease;
+      }
+
+      @keyframes popIn {
+        from {
+          opacity: 0;
+          transform: translateY(12px) scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      h1 {
+        margin: 0 0 10px;
+        font-size: clamp(1.5rem, 3vw, 2.3rem);
+      }
+
+      .subtitle {
+        margin: 0 auto 20px;
+        font-size: clamp(1rem, 2.2vw, 1.2rem);
+        max-width: 40ch;
+      }
+
+      .spotlight {
+        margin: 0 auto 24px;
+        min-height: 76px;
+        display: grid;
+        place-items: center;
+      }
+
+      .word {
+        position: absolute;
+        font-size: clamp(1.8rem, 4.4vw, 3rem);
+        font-weight: 900;
+        letter-spacing: 0.04em;
+        color: var(--pink);
+        text-shadow: 0 4px 0 #fff;
+        opacity: 0;
+        transform: translateY(10px) scale(0.9);
+        animation: cycle 8s infinite;
+      }
+
+      .word:nth-child(2) {
+        animation-delay: 2s;
+        color: #ff6b6b;
+      }
+
+      .word:nth-child(3) {
+        animation-delay: 4s;
+        color: #ff7f50;
+      }
+
+      .word:nth-child(4) {
+        animation-delay: 6s;
+        color: #4c6ef5;
+      }
+
+      @keyframes cycle {
+        0%,
+        18% {
+          opacity: 0;
+          transform: translateY(10px) scale(0.9);
+        }
+        24%,
+        44% {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+        50%,
+        100% {
+          opacity: 0;
+          transform: translateY(-12px) scale(1.05);
+        }
+      }
+
+      .message {
+        font-size: clamp(1rem, 2.2vw, 1.22rem);
+        line-height: 1.55;
+        margin: 0 auto;
+        max-width: 42ch;
+      }
+
+      .message b {
+        color: #d10b6c;
+      }
+
+      .button-row {
+        margin-top: 24px;
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      button {
+        border: 0;
+        border-radius: 999px;
+        padding: 10px 16px;
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        background: white;
+        color: #7d1550;
+        box-shadow: 0 6px 14px rgba(125, 21, 80, 0.18);
+        transition: transform 160ms ease, box-shadow 160ms ease;
+      }
+
+      button:hover {
+        transform: translateY(-2px) rotate(-1deg);
+        box-shadow: 0 10px 18px rgba(125, 21, 80, 0.2);
+      }
+
+      .spark {
+        animation: wiggle 600ms ease;
+      }
+
+      @keyframes wiggle {
+        0%,
+        100% {
+          transform: rotate(0deg);
+        }
+        25% {
+          transform: rotate(-1.8deg);
+        }
+        75% {
+          transform: rotate(1.8deg);
+        }
+      }
+
+      .footer {
+        margin-top: 16px;
+        font-size: 0.92rem;
+        opacity: 0.85;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hearts" id="hearts"></div>
+
+    <main class="card" id="card">
+      <h1>Emergency Smile Delivery</h1>
+      <p class="subtitle">
+        Attention, beautiful human: this page was built because you deserve extra smiles today.
+      </p>
+
+      <div class="spotlight" aria-live="polite">
+        <span class="word">PRETTY</span>
+        <span class="word">BEAUTIFUL</span>
+        <span class="word">SEXY</span>
+        <span class="word">SMART</span>
+      </div>
+
+      <p class="message" id="message">
+        You are <b>pretty</b>, <b>beautiful</b>, <b>sexy</b>, and seriously <b>smart</b>. You make life brighter,
+        funnier, and way more magical just by being you.
+      </p>
+
+      <div class="button-row">
+        <button id="boost">Boost Compliment Level</button>
+        <button id="rain">Heart Rain</button>
+      </div>
+
+      <p class="footer">Made with goofy love by your boyfriend.</p>
+    </main>
+
+    <script>
+      const heartsWrap = document.getElementById("hearts");
+      const card = document.getElementById("card");
+      const message = document.getElementById("message");
+      const boostBtn = document.getElementById("boost");
+      const rainBtn = document.getElementById("rain");
+
+      const lines = [
+        "You are pretty, beautiful, sexy, and so smart it honestly feels unfair.",
+        "You are my favorite combination: gorgeous, brilliant, and wildly lovable.",
+        "Pretty face, beautiful heart, sexy energy, smart brain. Total masterpiece.",
+        "You are beautiful in every way, and your smart mind is ridiculously attractive."
+      ];
+
+      function spawnHeart(burst = false) {
+        const heart = document.createElement("span");
+        heart.className = "heart";
+        const size = burst ? 12 + Math.random() * 18 : 12 + Math.random() * 10;
+        const left = Math.random() * 100;
+        const duration = burst ? 2200 + Math.random() * 1400 : 4800 + Math.random() * 3200;
+        const hueShift = Math.floor(Math.random() * 30);
+
+        heart.style.left = `${left}vw`;
+        heart.style.bottom = `-${20 + Math.random() * 20}px`;
+        heart.style.width = `${size}px`;
+        heart.style.height = `${size}px`;
+        heart.style.animationDuration = `${duration}ms`;
+        heart.style.background = `hsl(${338 + hueShift}, 98%, 62%)`;
+
+        heartsWrap.appendChild(heart);
+        setTimeout(() => heart.remove(), duration + 300);
+      }
+
+      for (let i = 0; i < 24; i++) {
+        setTimeout(() => spawnHeart(false), i * 200);
+      }
+
+      setInterval(() => spawnHeart(false), 320);
+
+      boostBtn.addEventListener("click", () => {
+        const line = lines[Math.floor(Math.random() * lines.length)];
+        message.textContent = line;
+        card.classList.remove("spark");
+        void card.offsetWidth;
+        card.classList.add("spark");
+        for (let i = 0; i < 20; i++) {
+          setTimeout(() => spawnHeart(true), i * 30);
+        }
+      });
+
+      rainBtn.addEventListener("click", () => {
+        for (let i = 0; i < 55; i++) {
+          setTimeout(() => spawnHeart(true), i * 22);
+        }
+      });
+    </script>
+  </body>
+</html>

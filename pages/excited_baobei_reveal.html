@@ -1,0 +1,917 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Excited To See Baobei Soon</title>
+    <style>
+      :root {
+        --bg-a: #fff3e8;
+        --bg-b: #ffd9ec;
+        --bg-c: #dff7ff;
+        --accent-pink: #ff5fa2;
+        --accent-peach: #ffb37a;
+        --accent-gold: #ffd86b;
+        --ink: #4d2e42;
+        --card: rgba(255, 255, 255, 0.86);
+        --line: rgba(255, 95, 162, 0.24);
+        --shadow: 0 24px 70px rgba(169, 74, 118, 0.18);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+      }
+
+      body {
+        min-height: 100vh;
+        overflow: hidden;
+        font-family: "Trebuchet MS", "Avenir Next", "Segoe UI", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.85), transparent 20%),
+          radial-gradient(circle at 84% 16%, rgba(255, 223, 238, 0.95), transparent 24%),
+          radial-gradient(circle at 18% 82%, rgba(221, 247, 255, 0.92), transparent 26%),
+          linear-gradient(150deg, var(--bg-a), var(--bg-b) 45%, var(--bg-c));
+        display: grid;
+        place-items: center;
+      }
+
+      .sky {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+      }
+
+      .blob {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(12px);
+        opacity: 0.55;
+        animation: drift 16s ease-in-out infinite alternate;
+      }
+
+      .blob.one {
+        width: 18rem;
+        height: 18rem;
+        background: rgba(255, 181, 203, 0.45);
+        top: -2rem;
+        right: -2rem;
+      }
+
+      .blob.two {
+        width: 22rem;
+        height: 22rem;
+        background: rgba(255, 227, 159, 0.35);
+        bottom: -6rem;
+        left: -4rem;
+        animation-duration: 19s;
+      }
+
+      .blob.three {
+        width: 16rem;
+        height: 16rem;
+        background: rgba(190, 235, 255, 0.42);
+        top: 42%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        animation-duration: 18s;
+      }
+
+      @keyframes drift {
+        from {
+          transform: translate3d(0, 0, 0) scale(1);
+        }
+        to {
+          transform: translate3d(1.2rem, -1rem, 0) scale(1.08);
+        }
+      }
+
+      .ambient-hearts,
+      .burst-layer {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+      }
+
+      .ambient-heart,
+      .burst-piece {
+        position: absolute;
+        opacity: 0;
+      }
+
+      .ambient-heart {
+        width: 0.9rem;
+        height: 0.9rem;
+        background: rgba(255, 95, 162, 0.9);
+        transform: rotate(45deg);
+        border-radius: 0.2rem;
+        animation: float-heart linear infinite;
+      }
+
+      .ambient-heart::before,
+      .ambient-heart::after {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: inherit;
+        border-radius: 50%;
+      }
+
+      .ambient-heart::before {
+        left: -50%;
+      }
+
+      .ambient-heart::after {
+        top: -50%;
+      }
+
+      @keyframes float-heart {
+        0% {
+          opacity: 0;
+          transform: translateY(2rem) rotate(45deg) scale(0.5);
+        }
+        15% {
+          opacity: 0.8;
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(-115vh) rotate(45deg) scale(1.1);
+        }
+      }
+
+      .shell {
+        position: relative;
+        width: min(92vw, 42rem);
+        min-height: min(88vh, 44rem);
+        display: grid;
+        place-items: center;
+      }
+
+      .panel {
+        position: relative;
+        width: 100%;
+        min-height: min(84vh, 40rem);
+        padding: 1.5rem;
+        border-radius: 2rem;
+        background: var(--card);
+        border: 0.18rem solid var(--line);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(10px);
+        overflow: hidden;
+      }
+
+      .panel::before {
+        content: "";
+        position: absolute;
+        inset: 0.8rem;
+        border-radius: 1.5rem;
+        border: 1px dashed rgba(255, 95, 162, 0.18);
+        pointer-events: none;
+      }
+
+      .scene {
+        position: absolute;
+        inset: 1.4rem;
+        display: grid;
+        place-items: center;
+        text-align: center;
+        opacity: 0;
+        transform: scale(0.96) translateY(1rem);
+        pointer-events: none;
+        transition:
+          opacity 420ms ease,
+          transform 420ms ease;
+      }
+
+      .scene.active {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        pointer-events: auto;
+      }
+
+      .intro-card,
+      .media-card,
+      .final-card {
+        width: min(100%, 31rem);
+        display: grid;
+        gap: 1rem;
+        justify-items: center;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        padding: 0.45rem 0.8rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.76);
+        border: 1px solid rgba(255, 95, 162, 0.18);
+        font-size: 0.84rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2rem, 7vw, 3.55rem);
+        line-height: 1.05;
+        letter-spacing: -0.03em;
+        max-width: 11ch;
+      }
+
+      .headline-ink {
+        display: inline-block;
+        background: linear-gradient(135deg, #d74a86, #ff8b72 58%, #6bc5ff);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .subcopy {
+        margin: 0;
+        font-size: clamp(1rem, 2.9vw, 1.16rem);
+        line-height: 1.55;
+        max-width: 27ch;
+      }
+
+      .tap-target {
+        border: 0;
+        cursor: pointer;
+        width: min(100%, 28rem);
+        padding: 1rem 1rem 1.2rem;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 246, 250, 0.94));
+        border-radius: 1.7rem;
+        box-shadow: 0 12px 28px rgba(177, 95, 126, 0.14);
+        color: inherit;
+        transition:
+          transform 180ms ease,
+          box-shadow 180ms ease;
+      }
+
+      .tap-target:hover,
+      .tap-target:focus-visible {
+        transform: translateY(-0.15rem);
+        box-shadow: 0 18px 32px rgba(177, 95, 126, 0.18);
+      }
+
+      .tap-target:focus-visible,
+      .replay-button:focus-visible {
+        outline: 3px solid rgba(107, 197, 255, 0.75);
+        outline-offset: 3px;
+      }
+
+      .tap-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 800;
+        font-size: 1rem;
+        letter-spacing: 0.02em;
+        color: #b93e7a;
+        animation: pulse 1.6s ease-in-out infinite;
+      }
+
+      .tap-meta {
+        margin: 0.5rem 0 0;
+        font-size: 0.95rem;
+        opacity: 0.78;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.05);
+          opacity: 0.74;
+        }
+      }
+
+      .doodle-row {
+        display: flex;
+        gap: 0.8rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        font-size: 1.45rem;
+      }
+
+      .doodle {
+        display: inline-grid;
+        place-items: center;
+        width: 2.6rem;
+        height: 2.6rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.7);
+        box-shadow: inset 0 0 0 1px rgba(255, 95, 162, 0.14);
+        animation: bob 2.8s ease-in-out infinite;
+      }
+
+      .doodle:nth-child(2) {
+        animation-delay: 180ms;
+      }
+
+      .doodle:nth-child(3) {
+        animation-delay: 360ms;
+      }
+
+      @keyframes bob {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-0.22rem);
+        }
+      }
+
+      .stage-shell {
+        width: min(100%, 30rem);
+        aspect-ratio: 4 / 5;
+        border-radius: 1.6rem;
+        background: linear-gradient(180deg, rgba(255, 250, 253, 0.98), rgba(255, 238, 246, 0.96));
+        box-shadow: inset 0 0 0 1px rgba(255, 95, 162, 0.12);
+        overflow: hidden;
+        position: relative;
+      }
+
+      .stage-shell::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(circle at 20% 20%, rgba(255, 219, 236, 0.9), transparent 22%),
+          radial-gradient(circle at 80% 18%, rgba(254, 231, 188, 0.75), transparent 20%),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.5), transparent 28%);
+        pointer-events: none;
+      }
+
+      .media-frame {
+        position: absolute;
+        inset: 1rem;
+        border-radius: 1.2rem;
+        overflow: hidden;
+        display: grid;
+        place-items: center;
+        background: rgba(255, 255, 255, 0.66);
+        box-shadow: inset 0 0 0 1px rgba(255, 95, 162, 0.14);
+      }
+
+      .media-frame img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+        image-rendering: pixelated;
+      }
+
+      .gif-scene .media-frame {
+        transform: scale(0.9);
+        opacity: 0;
+        transition:
+          opacity 280ms ease,
+          transform 280ms ease;
+      }
+
+      .gif-scene.active .media-frame {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      .gif-scene.exiting .media-frame {
+        transform: scale(1.06);
+        opacity: 0.15;
+      }
+
+      .media-note {
+        position: absolute;
+        left: 50%;
+        bottom: 1rem;
+        transform: translateX(-50%);
+        padding: 0.5rem 0.9rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.86);
+        font-size: 0.9rem;
+        box-shadow: 0 0.4rem 1rem rgba(177, 95, 126, 0.12);
+      }
+
+      .media-fallback {
+        position: absolute;
+        inset: 1rem;
+        display: none;
+        align-content: center;
+        justify-items: center;
+        gap: 0.65rem;
+        padding: 1.2rem;
+        text-align: center;
+        border-radius: 1.2rem;
+        background:
+          repeating-linear-gradient(
+            -45deg,
+            rgba(255, 255, 255, 0.56) 0,
+            rgba(255, 255, 255, 0.56) 0.8rem,
+            rgba(255, 229, 239, 0.8) 0.8rem,
+            rgba(255, 229, 239, 0.8) 1.6rem
+          );
+        box-shadow: inset 0 0 0 1px rgba(255, 95, 162, 0.16);
+      }
+
+      .media-frame.is-fallback + .media-fallback {
+        display: grid;
+      }
+
+      .fallback-icon {
+        font-size: 2.2rem;
+      }
+
+      .fallback-title {
+        margin: 0;
+        font-size: 1.2rem;
+      }
+
+      .fallback-copy {
+        margin: 0;
+        max-width: 22ch;
+        line-height: 1.45;
+      }
+
+      .burst-layer.active .burst-piece {
+        animation: burst-out var(--burst-duration, 900ms) ease-out forwards;
+      }
+
+      .burst-piece.heart {
+        width: 1rem;
+        height: 1rem;
+        background: var(--accent-pink);
+        transform: rotate(45deg);
+        border-radius: 0.2rem;
+      }
+
+      .burst-piece.heart::before,
+      .burst-piece.heart::after {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: inherit;
+        border-radius: 50%;
+      }
+
+      .burst-piece.heart::before {
+        left: -50%;
+      }
+
+      .burst-piece.heart::after {
+        top: -50%;
+      }
+
+      .burst-piece.sparkle {
+        width: 0.85rem;
+        height: 0.85rem;
+        background: var(--accent-gold);
+        clip-path: polygon(50% 0%, 64% 36%, 100% 50%, 64% 64%, 50% 100%, 36% 64%, 0% 50%, 36% 36%);
+      }
+
+      .burst-piece.blob {
+        width: 1.15rem;
+        height: 1.15rem;
+        background: var(--accent-peach);
+        border-radius: 54% 46% 65% 35% / 52% 46% 54% 48%;
+      }
+
+      .burst-piece.ring {
+        width: 1.35rem;
+        height: 1.35rem;
+        border: 0.18rem solid #6bc5ff;
+        border-radius: 50%;
+      }
+
+      @keyframes burst-out {
+        0% {
+          opacity: 0;
+          transform:
+            translate(-50%, -50%)
+            rotate(var(--rot, 0deg))
+            translate(0)
+            scale(0.3);
+        }
+        18% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+          transform:
+            translate(-50%, -50%)
+            rotate(calc(var(--rot, 0deg) + 24deg))
+            translate(var(--travel-x, 0), var(--travel-y, 0))
+            scale(var(--scale, 1.2));
+        }
+      }
+
+      .photo-frame {
+        width: min(100%, 23rem);
+        padding: 1rem 1rem 1.45rem;
+        border-radius: 1.35rem;
+        background: linear-gradient(180deg, #fffdfd, #fff4f8);
+        box-shadow:
+          0 1.1rem 2.4rem rgba(177, 95, 126, 0.14),
+          inset 0 0 0 1px rgba(255, 95, 162, 0.12);
+        transform: translateY(1rem) scale(0.96);
+        opacity: 0;
+      }
+
+      .final-scene.active .photo-frame {
+        animation: settle-in 520ms cubic-bezier(0.19, 1, 0.22, 1) forwards;
+      }
+
+      @keyframes settle-in {
+        from {
+          opacity: 0;
+          transform: translateY(1rem) scale(0.96) rotate(-2deg);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1) rotate(-1deg);
+        }
+      }
+
+      .photo-window {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 4 / 5;
+        border-radius: 1rem;
+        overflow: hidden;
+        background: #fff6f9;
+        box-shadow: inset 0 0 0 1px rgba(255, 95, 162, 0.12);
+      }
+
+      .photo-window img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+        image-rendering: pixelated;
+        background: radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.72), rgba(255, 236, 244, 0.45));
+      }
+
+      .photo-window.is-fallback .photo-fallback {
+        display: grid;
+      }
+
+      .photo-fallback {
+        position: absolute;
+        inset: 0;
+        display: none;
+        place-items: center;
+        padding: 1.2rem;
+        text-align: center;
+        background:
+          radial-gradient(circle at 25% 20%, rgba(255, 219, 236, 0.82), transparent 26%),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.76), rgba(255, 237, 244, 0.92));
+      }
+
+      .photo-fallback-card {
+        display: grid;
+        gap: 0.5rem;
+      }
+
+      .photo-fallback-card strong {
+        font-size: 1.12rem;
+      }
+
+      .caption {
+        margin: 0.95rem 0 0;
+        font-size: 1.12rem;
+        font-weight: 800;
+        letter-spacing: 0.01em;
+      }
+
+      .caption,
+      .replay-button {
+        opacity: 0;
+        transform: translateY(0.6rem);
+      }
+
+      .final-scene.is-ready .caption {
+        animation: reveal-copy 340ms ease forwards;
+        animation-delay: 180ms;
+      }
+
+      .final-scene.is-ready .replay-button {
+        animation: reveal-copy 340ms ease forwards;
+        animation-delay: 340ms;
+      }
+
+      @keyframes reveal-copy {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .replay-button {
+        border: 0;
+        border-radius: 999px;
+        padding: 0.8rem 1.2rem;
+        font: inherit;
+        font-weight: 800;
+        color: white;
+        background: linear-gradient(135deg, #ff6aa8, #ff9e75);
+        cursor: pointer;
+        box-shadow: 0 0.8rem 1.4rem rgba(255, 108, 154, 0.24);
+      }
+
+      .final-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        padding: 0.45rem 0.85rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(255, 95, 162, 0.15);
+        font-size: 0.85rem;
+      }
+
+      @media (max-width: 38rem) {
+        .panel {
+          min-height: min(84vh, 42rem);
+          padding: 1rem;
+          border-radius: 1.6rem;
+        }
+
+        .scene {
+          inset: 1rem;
+        }
+
+        h1 {
+          font-size: clamp(1.85rem, 10vw, 2.7rem);
+        }
+
+        .stage-shell {
+          width: min(100%, 24rem);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+          scroll-behavior: auto !important;
+        }
+
+        .ambient-heart,
+        .blob {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sky" aria-hidden="true">
+      <div class="blob one"></div>
+      <div class="blob two"></div>
+      <div class="blob three"></div>
+    </div>
+    <div class="ambient-hearts" id="ambient-hearts" aria-hidden="true"></div>
+    <div class="burst-layer" id="burst-layer" aria-hidden="true"></div>
+
+    <main class="shell">
+      <section class="panel">
+        <section class="scene intro-scene active" id="scene-intro">
+          <div class="intro-card">
+            <div class="eyebrow">Tiny love transmission</div>
+            <div class="doodle-row" aria-hidden="true">
+              <span class="doodle">♡</span>
+              <span class="doodle">✦</span>
+              <span class="doodle">☁</span>
+            </div>
+            <h1><span class="headline-ink" id="intro-text"></span></h1>
+            <p class="subcopy">
+              I made a tiny dramatic internet moment because waiting to see you is making my heart do cartoons.
+            </p>
+            <button class="tap-target" id="tap-target" type="button" aria-label="Tap to continue the reveal">
+              <span class="tap-label">Tap to continue ✨</span>
+              <p class="tap-meta">There is a very important cute reveal waiting inside.</p>
+            </button>
+          </div>
+        </section>
+
+        <section class="scene gif-scene" id="scene-gif" aria-live="polite">
+          <div class="media-card">
+            <div class="eyebrow">Maximum anticipation mode</div>
+            <div class="stage-shell">
+              <div class="media-frame" id="gif-frame">
+                <img id="gif-image" alt="Placeholder GIF stage for the reveal" />
+              </div>
+              <div class="media-fallback" id="gif-fallback">
+                <div class="fallback-icon">🎞️</div>
+                <h2 class="fallback-title">cat GIF goes here</h2>
+                <p class="fallback-copy">
+                  Add your cat GIF at <code>../assets/reveal/baobei-cat.gif</code> and adjust the duration constant if needed.
+                </p>
+              </div>
+              <div class="media-note">tiny dramatic pause...</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="scene final-scene" id="scene-final" aria-live="polite">
+          <div class="final-card">
+            <div class="final-badge">sweet ending unlocked</div>
+            <div class="photo-frame">
+              <div class="photo-window" id="photo-window">
+                <img id="photo-image" alt="Placeholder photo of us together" />
+                <div class="photo-fallback">
+                  <div class="photo-fallback-card">
+                    <div style="font-size: 2.3rem" aria-hidden="true">📸💞</div>
+                    <strong>your photo goes here</strong>
+                    <span>Add the pixel-art couple photo at <code>../assets/reveal/baobei-us.png</code>.</span>
+                  </div>
+                </div>
+              </div>
+              <p class="caption" id="final-caption"></p>
+            </div>
+            <button class="replay-button" id="replay-button" type="button">Replay</button>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script>
+      const INTRO_TEXT = "I am so excited to see baobei soon";
+      const FINAL_CAPTION = "us soon <3";
+      const GIF_SRC = "../assets/reveal/baobei-cat.gif";
+      const PHOTO_SRC = "../assets/reveal/baobei-us.png";
+      const GIF_DURATION_MS = 2400;
+      const EXPLOSION_DURATION_MS = 950;
+      const AMBIENT_HEART_COUNT = 16;
+      const BURST_PIECE_COUNT = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 10 : 28;
+
+      const introText = document.getElementById("intro-text");
+      const finalCaption = document.getElementById("final-caption");
+      const tapTarget = document.getElementById("tap-target");
+      const replayButton = document.getElementById("replay-button");
+      const burstLayer = document.getElementById("burst-layer");
+      const ambientHearts = document.getElementById("ambient-hearts");
+      const gifImage = document.getElementById("gif-image");
+      const gifFrame = document.getElementById("gif-frame");
+      const photoImage = document.getElementById("photo-image");
+      const photoWindow = document.getElementById("photo-window");
+      const sceneIntro = document.getElementById("scene-intro");
+      const sceneGif = document.getElementById("scene-gif");
+      const sceneFinal = document.getElementById("scene-final");
+
+      introText.textContent = INTRO_TEXT;
+      finalCaption.textContent = FINAL_CAPTION;
+
+      let currentState = "intro";
+      let gifTimer = 0;
+      let explosionTimer = 0;
+      let revealTimer = 0;
+
+      function createAmbientHearts() {
+        ambientHearts.innerHTML = "";
+
+        for (let i = 0; i < AMBIENT_HEART_COUNT; i += 1) {
+          const heart = document.createElement("span");
+          heart.className = "ambient-heart";
+          heart.style.left = `${Math.random() * 100}%`;
+          heart.style.bottom = `${-8 - Math.random() * 28}px`;
+          heart.style.animationDuration = `${7 + Math.random() * 7}s`;
+          heart.style.animationDelay = `${Math.random() * 7}s`;
+          heart.style.opacity = "0";
+          heart.style.transform = `rotate(45deg) scale(${0.55 + Math.random() * 0.8})`;
+          ambientHearts.appendChild(heart);
+        }
+      }
+
+      function clearTimers() {
+        window.clearTimeout(gifTimer);
+        window.clearTimeout(explosionTimer);
+        window.clearTimeout(revealTimer);
+      }
+
+      function activateScene(nextState) {
+        currentState = nextState;
+        sceneIntro.classList.toggle("active", nextState === "intro");
+        sceneGif.classList.toggle("active", nextState === "gif");
+        sceneFinal.classList.toggle("active", nextState === "final");
+      }
+
+      function resetGifPlayback() {
+        gifFrame.classList.remove("is-fallback");
+        gifImage.removeAttribute("aria-hidden");
+        const cacheBustedSrc = `${GIF_SRC}${GIF_SRC.includes("?") ? "&" : "?"}t=${Date.now()}`;
+        gifImage.src = cacheBustedSrc;
+      }
+
+      function triggerExplosion() {
+        sceneGif.classList.add("exiting");
+        burstLayer.innerHTML = "";
+        burstLayer.style.setProperty("--burst-duration", `${EXPLOSION_DURATION_MS}ms`);
+        burstLayer.classList.add("active");
+
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
+        const kinds = ["heart", "sparkle", "blob", "ring"];
+
+        for (let i = 0; i < BURST_PIECE_COUNT; i += 1) {
+          const piece = document.createElement("span");
+          const angle = (Math.PI * 2 * i) / BURST_PIECE_COUNT;
+          const radius = 70 + Math.random() * 160;
+          const x = Math.cos(angle) * radius;
+          const y = Math.sin(angle) * radius;
+          const kind = kinds[i % kinds.length];
+          piece.className = `burst-piece ${kind}`;
+          piece.style.left = `${centerX}px`;
+          piece.style.top = `${centerY}px`;
+          piece.style.setProperty("--travel-x", `${x}px`);
+          piece.style.setProperty("--travel-y", `${y}px`);
+          piece.style.setProperty("--rot", `${Math.random() * 360}deg`);
+          piece.style.setProperty("--scale", `${0.85 + Math.random() * 0.8}`);
+          piece.style.animationDelay = `${Math.random() * 80}ms`;
+          burstLayer.appendChild(piece);
+        }
+
+        explosionTimer = window.setTimeout(() => {
+          burstLayer.classList.remove("active");
+          burstLayer.innerHTML = "";
+          sceneGif.classList.remove("exiting");
+          showFinale();
+        }, EXPLOSION_DURATION_MS);
+      }
+
+      function showFinale() {
+        activateScene("final");
+        revealTimer = window.setTimeout(() => {
+          sceneFinal.classList.add("is-ready");
+        }, 60);
+      }
+
+      function beginSequence() {
+        if (currentState !== "intro") {
+          return;
+        }
+
+        clearTimers();
+        sceneFinal.classList.remove("is-ready");
+        activateScene("gif");
+        resetGifPlayback();
+
+        gifTimer = window.setTimeout(() => {
+          if (currentState !== "gif") {
+            return;
+          }
+
+          triggerExplosion();
+        }, GIF_DURATION_MS);
+      }
+
+      function resetSequence() {
+        clearTimers();
+        currentState = "intro";
+        sceneGif.classList.remove("exiting");
+        sceneFinal.classList.remove("is-ready");
+        burstLayer.classList.remove("active");
+        burstLayer.innerHTML = "";
+        activateScene("intro");
+        replayButton.blur();
+      }
+
+      function markFallback(img, container) {
+        img.addEventListener("error", () => {
+          container.classList.add("is-fallback");
+          img.setAttribute("aria-hidden", "true");
+        });
+
+        img.addEventListener("load", () => {
+          container.classList.remove("is-fallback");
+          img.removeAttribute("aria-hidden");
+        });
+      }
+
+      markFallback(gifImage, gifFrame);
+      markFallback(photoImage, photoWindow);
+      photoImage.src = PHOTO_SRC;
+      gifImage.src = GIF_SRC;
+
+      tapTarget.addEventListener("click", beginSequence);
+      replayButton.addEventListener("click", resetSequence);
+
+      createAmbientHearts();
+    </script>
+  </body>
+</html>

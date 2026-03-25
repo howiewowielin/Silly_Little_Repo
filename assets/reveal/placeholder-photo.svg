@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 800" role="img" aria-labelledby="title desc">
+  <title id="title">Placeholder Photo</title>
+  <desc id="desc">A pastel placeholder for the final photo reveal.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fff6ef"/>
+      <stop offset="50%" stop-color="#ffe3f0"/>
+      <stop offset="100%" stop-color="#e7f7ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="800" fill="url(#bg)"/>
+  <circle cx="142" cy="156" r="76" fill="#ffffff" opacity="0.5"/>
+  <circle cx="520" cy="136" r="54" fill="#ffe8a8" opacity="0.45"/>
+  <circle cx="502" cy="680" r="92" fill="#d7f2ff" opacity="0.55"/>
+  <g transform="translate(320 300)">
+    <circle cx="-78" cy="0" r="92" fill="#ffcadf"/>
+    <circle cx="78" cy="0" r="92" fill="#ffdcb5"/>
+    <circle cx="-78" cy="-22" r="44" fill="#fff5fb"/>
+    <circle cx="78" cy="-22" r="44" fill="#fff8f0"/>
+    <path d="M-138 110c18-62 46-88 60-88 24 0 44 20 78 20s54-20 78-20c14 0 42 26 60 88" fill="#fff7fb"/>
+    <path d="M-18 90c0-42 34-76 76-76s76 34 76 76c0 49-51 83-114 139C-43 173-94 139-94 90c0-42 34-76 76-76s76 34 76 76z" fill="#ff72ad" transform="translate(-60 124) scale(0.45)"/>
+  </g>
+  <text x="320" y="650" text-anchor="middle" font-family="Trebuchet MS, Avenir Next, sans-serif" font-size="30" fill="#7f4664">
+    Drop your photo here
+  </text>
+  <text x="320" y="698" text-anchor="middle" font-family="Trebuchet MS, Avenir Next, sans-serif" font-size="22" fill="#9e6b83">
+    Replace assets/reveal/placeholder-photo.svg with your real image path
+  </text>
+</svg>

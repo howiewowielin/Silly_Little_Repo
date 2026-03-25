@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 800" role="img" aria-labelledby="title desc">
+  <title id="title">Placeholder GIF</title>
+  <desc id="desc">A pastel placeholder for the GIF stage.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fff3ea"/>
+      <stop offset="52%" stop-color="#ffd9ec"/>
+      <stop offset="100%" stop-color="#def5ff"/>
+    </linearGradient>
+    <linearGradient id="frame" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#fff7fb"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="800" fill="url(#bg)"/>
+  <circle cx="120" cy="120" r="84" fill="#ffffff" opacity="0.45"/>
+  <circle cx="560" cy="170" r="68" fill="#ffe4a8" opacity="0.45"/>
+  <circle cx="540" cy="700" r="100" fill="#d4f1ff" opacity="0.5"/>
+  <rect x="88" y="92" width="464" height="616" rx="36" fill="url(#frame)" stroke="#f5b8d4" stroke-width="4"/>
+  <rect x="120" y="136" width="400" height="344" rx="28" fill="#fff0f6" stroke="#ffd4e8" stroke-width="3"/>
+  <path d="M320 255c0-45 36-81 81-81s81 36 81 81c0 53-54 90-121 150-67-60-121-97-121-150 0-45 36-81 81-81s81 36 81 81z" fill="#ff7cb5"/>
+  <circle cx="250" cy="210" r="16" fill="#fff8fb" opacity="0.5"/>
+  <g fill="#f7b65f">
+    <path d="M146 196l10 24 24 10-24 10-10 24-10-24-24-10 24-10z"/>
+    <path d="M502 270l8 20 20 8-20 8-8 20-8-20-20-8 20-8z"/>
+  </g>
+  <text x="320" y="570" text-anchor="middle" font-family="Trebuchet MS, Avenir Next, sans-serif" font-size="30" fill="#7f4664">
+    Drop your real GIF here
+  </text>
+  <text x="320" y="620" text-anchor="middle" font-family="Trebuchet MS, Avenir Next, sans-serif" font-size="22" fill="#9e6b83">
+    Replace assets/reveal/placeholder-gif.svg with your file path
+  </text>
+</svg>
